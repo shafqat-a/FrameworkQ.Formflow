@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/shafqat/git/FrameworkQ.Formflow/backend/tests/FormDesigner.Tests.Contract/FormDesigner.Tests.Contract/FormDesigner.Tests.Contract.csproj": {}
+    "/Users/shafqat/git/FrameworkQ.Formflow/backend/tests/FormDesigner.Tests.Contract/FormDesigner.Tests.Contract.csproj": {}
   },
   "projects": {
-    "/Users/shafqat/git/FrameworkQ.Formflow/backend/tests/FormDesigner.Tests.Contract/FormDesigner.Tests.Contract/FormDesigner.Tests.Contract.csproj": {
+    "/Users/shafqat/git/FrameworkQ.Formflow/backend/tests/FormDesigner.Tests.Contract/FormDesigner.Tests.Contract.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/shafqat/git/FrameworkQ.Formflow/backend/tests/FormDesigner.Tests.Contract/FormDesigner.Tests.Contract/FormDesigner.Tests.Contract.csproj",
+        "projectUniqueName": "/Users/shafqat/git/FrameworkQ.Formflow/backend/tests/FormDesigner.Tests.Contract/FormDesigner.Tests.Contract.csproj",
         "projectName": "FormDesigner.Tests.Contract",
-        "projectPath": "/Users/shafqat/git/FrameworkQ.Formflow/backend/tests/FormDesigner.Tests.Contract/FormDesigner.Tests.Contract/FormDesigner.Tests.Contract.csproj",
+        "projectPath": "/Users/shafqat/git/FrameworkQ.Formflow/backend/tests/FormDesigner.Tests.Contract/FormDesigner.Tests.Contract.csproj",
         "packagesPath": "/Users/shafqat/.nuget/packages/",
-        "outputPath": "/Users/shafqat/git/FrameworkQ.Formflow/backend/tests/FormDesigner.Tests.Contract/FormDesigner.Tests.Contract/obj/",
+        "outputPath": "/Users/shafqat/git/FrameworkQ.Formflow/backend/tests/FormDesigner.Tests.Contract/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/shafqat/.nuget/NuGet/NuGet.Config"
@@ -44,9 +44,17 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "dependencies": {
+            "FluentAssertions": {
+              "target": "Package",
+              "version": "[6.12.0, )"
+            },
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",
               "version": "[17.14.0, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.70, )"
             },
             "coverlet.collector": {
               "target": "Package",
@@ -54,11 +62,13 @@
             },
             "xunit": {
               "target": "Package",
-              "version": "[2.9.2, )"
+              "version": "[2.6.2, )"
             },
             "xunit.runner.visualstudio": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
-              "version": "[2.8.2, )"
+              "version": "[2.5.4, )"
             }
           },
           "imports": [
