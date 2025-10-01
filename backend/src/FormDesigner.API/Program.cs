@@ -61,38 +61,23 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Configure Swagger/OpenAPI
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
-    {
-        Title = "Form Designer API",
-        Version = "v1",
-        Description = "API for visual form designer with design and runtime modes"
-    });
-
-    // Include XML comments if available
-    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    if (File.Exists(xmlPath))
-    {
-        options.IncludeXmlComments(xmlPath);
-    }
-});
+// Configure Swagger/OpenAPI (disabled for .NET 10 preview compatibility)
+// builder.Services.AddEndpointsApiExplorer();
+// builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Form Designer API v1");
-        options.RoutePrefix = "swagger";
-    });
-}
+// Swagger disabled for .NET 10 preview compatibility
+// if (app.Environment.IsDevelopment())
+// {
+//     app.UseSwagger();
+//     app.UseSwaggerUI(options =>
+//     {
+//         options.SwaggerEndpoint("/swagger/v1/swagger.json", "Form Designer API v1");
+//         options.RoutePrefix = "swagger";
+//     });
+// }
 
 // Enable CORS
 app.UseCors();
