@@ -12,28 +12,22 @@ This directory contains database setup scripts for the FormDesigner application.
 ### 1. Create Database
 
 ```bash
-# Create production database
-createdb formdesigner
-
-# Create development database
-createdb formdesigner_dev
+# Create the formflow database
+createdb formflow
 ```
 
 ### 2. Run Setup Script
 
 ```bash
-# Production database
-psql -d formdesigner -f setup.sql
-
-# Development database
-psql -d formdesigner_dev -f setup.sql
+# Run setup script
+psql -d formflow -f setup.sql
 ```
 
 ### 3. Verify Setup
 
 ```bash
 # Connect to database
-psql -d formdesigner_dev
+psql -d formflow
 
 # List tables
 \dt
@@ -49,8 +43,7 @@ psql -d formdesigner_dev
 
 Configured in `appsettings.json`:
 
-- **Production**: `Host=localhost;Port=5432;Database=formdesigner;Username=postgres;Password=postgres`
-- **Development**: `Host=localhost;Port=5432;Database=formdesigner_dev;Username=postgres;Password=postgres`
+- **Production & Development**: `Host=localhost;Port=5400;Database=formflow;Username=postgres;Password=orion@123`
 
 ## Schema
 
@@ -98,13 +91,13 @@ WHERE form_id = 'sample-form';
 
 ```bash
 # Backup database
-pg_dump formdesigner_dev > backup.sql
+pg_dump formflow > backup.sql
 
 # Restore database
-psql -d formdesigner_dev < backup.sql
+psql -d formflow < backup.sql
 
 # Vacuum and analyze
-psql -d formdesigner_dev -c "VACUUM ANALYZE form_definitions;"
+psql -d formflow -c "VACUUM ANALYZE form_definitions;"
 ```
 
 ## Troubleshooting
@@ -115,7 +108,8 @@ If you cannot connect to PostgreSQL:
 
 1. Check PostgreSQL is running: `pg_isready`
 2. Verify connection settings in `appsettings.json`
-3. Check PostgreSQL logs: `tail -f /usr/local/var/log/postgres.log` (macOS Homebrew)
+3. Ensure PostgreSQL is listening on port 5400
+4. Check PostgreSQL logs
 
 ### Permission Issues
 
@@ -123,6 +117,6 @@ If you get permission errors:
 
 ```sql
 -- Grant permissions to user
-GRANT ALL PRIVILEGES ON DATABASE formdesigner_dev TO postgres;
+GRANT ALL PRIVILEGES ON DATABASE formflow TO postgres;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO postgres;
 ```

@@ -1,0 +1,6 @@
+@FormDesigner.API_HostAddress = http://localhost:5221
+
+GET {{FormDesigner.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
