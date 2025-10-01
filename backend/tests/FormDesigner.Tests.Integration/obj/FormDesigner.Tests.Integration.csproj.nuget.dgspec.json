@@ -567,6 +567,10 @@
               "target": "Package",
               "version": "[4.20.70, )"
             },
+            "YamlDotNet": {
+              "target": "Package",
+              "version": "[13.7.1, )"
+            },
             "coverlet.collector": {
               "target": "Package",
               "version": "[6.0.4, )"

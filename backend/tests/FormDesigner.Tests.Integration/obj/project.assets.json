@@ -3752,6 +3752,7 @@
       "Microsoft.AspNetCore.Mvc.Testing >= 8.0.0",
       "Microsoft.NET.Test.Sdk >= 17.14.0",
       "Moq >= 4.20.70",
+      "YamlDotNet >= 13.7.1",
       "coverlet.collector >= 6.0.4",
       "xunit >= 2.6.2",
       "xunit.runner.visualstudio >= 2.5.4"
@@ -3819,6 +3820,10 @@
           "Moq": {
             "target": "Package",
             "version": "[4.20.70, )"
+          },
+          "YamlDotNet": {
+            "target": "Package",
+            "version": "[13.7.1, )"
           },
           "coverlet.collector": {
             "target": "Package",
