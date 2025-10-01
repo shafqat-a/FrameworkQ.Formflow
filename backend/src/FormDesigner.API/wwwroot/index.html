@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Designer</title>
+
+    <!-- jQuery UI CSS -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/designer.css">
+</head>
+<body>
+    <!-- Toolbar -->
+    <div id="toolbar" class="toolbar">
+        <div class="toolbar-left">
+            <button id="btn-new" class="btn btn-primary">New</button>
+            <button id="btn-open" class="btn btn-secondary">Open</button>
+            <button id="btn-save" class="btn btn-success">Save Draft</button>
+            <button id="btn-commit" class="btn btn-warning">Commit</button>
+            <button id="btn-preview" class="btn btn-info">Preview</button>
+        </div>
+
+        <div class="toolbar-center">
+            <input type="text" id="form-title" class="form-control form-control-sm" placeholder="Form Title" style="width: 200px;">
+            <input type="text" id="form-id" class="form-control form-control-sm" placeholder="form-id" style="width: 150px;">
+            <input type="text" id="form-version" class="form-control form-control-sm" placeholder="1.0" value="1.0" style="width: 80px;">
+        </div>
+
+        <div class="toolbar-right">
+            <button id="btn-export-yaml" class="btn btn-info">Export YAML</button>
+            <button id="btn-import-yaml" class="btn btn-info">Import YAML</button>
+            <input type="file" id="file-import-yaml" accept=".yaml,.yml" style="display: none;">
+            <button id="btn-export-sql" class="btn btn-info">Export SQL</button>
+            <a href="/runtime.html" class="btn btn-primary">Runtime Mode</a>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div id="main-container" class="main-container">
+        <!-- Left Panel: Widget Palette -->
+        <div id="panel-left" class="panel panel-left">
+            <h3>Widget Palette</h3>
+            <div class="widget-palette">
+                <div class="widget-item" data-type="field" draggable="true">
+                    <div class="widget-icon">📝</div>
+                    <div class="widget-label">Field</div>
+                </div>
+                <div class="widget-item" data-type="group" draggable="true">
+                    <div class="widget-icon">📦</div>
+                    <div class="widget-label">Group</div>
+                </div>
+                <div class="widget-item" data-type="table" draggable="true">
+                    <div class="widget-icon">📊</div>
+                    <div class="widget-label">Table</div>
+                </div>
+                <div class="widget-item" data-type="grid" draggable="true">
+                    <div class="widget-icon">🔲</div>
+                    <div class="widget-label">Grid</div>
+                </div>
+                <div class="widget-item" data-type="checklist" draggable="true">
+                    <div class="widget-icon">✅</div>
+                    <div class="widget-label">Checklist</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: Canvas -->
+        <div id="panel-center" class="panel panel-center">
+            <!-- Page Tabs -->
+            <div id="page-tabs" class="page-tabs">
+                <button class="page-tab active" data-page-id="page-1">Page 1</button>
+                <button id="btn-add-page" class="btn btn-sm btn-light">+ Add Page</button>
+            </div>
+
+            <!-- Page Content -->
+            <div id="page-content" class="page-content">
+                <div class="page-container" data-page-id="page-1">
+                    <h2>Page 1</h2>
+                    <div class="sections-container">
+                        <div class="section" data-section-id="section-1">
+                            <div class="section-header">
+                                <input type="text" class="section-title-input" value="Section 1" placeholder="Section Title">
+                                <button class="btn-delete-section btn btn-sm btn-danger">×</button>
+                            </div>
+                            <div class="section-widgets drop-zone" data-section-id="section-1">
+                                <!-- Widgets will be dropped here -->
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-add-section btn btn-sm btn-secondary">+ Add Section</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Properties Inspector -->
+        <div id="panel-right" class="panel panel-right">
+            <h3>Properties</h3>
+            <div id="inspector-content" class="inspector-content">
+                <p class="text-muted">Select a widget to view properties</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Open Form Modal -->
+    <div class="modal fade" id="openFormModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Open Form</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="form-list" class="list-group">
+                        <!-- Forms will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery 3.7 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- jQuery UI 1.13 -->
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+    <!-- Bootstrap 5 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Designer JavaScript -->
+    <script src="/js/designer.js"></script>
+</body>
+</html>
