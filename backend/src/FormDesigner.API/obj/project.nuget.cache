@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "Lmn+seTMU0k=",
+  "success": true,
+  "projectFilePath": "/Users/shafqat/git/FrameworkQ.Formflow/backend/src/FormDesigner.API/FormDesigner.API/FormDesigner.API.csproj",
+  "expectedPackageFiles": [
+    "/Users/shafqat/.nuget/packages/microsoft.aspnetcore.openapi/10.0.0-preview.6.25358.103/microsoft.aspnetcore.openapi.10.0.0-preview.6.25358.103.nupkg.sha512",
+    "/Users/shafqat/.nuget/packages/microsoft.openapi/2.0.0-preview.29/microsoft.openapi.2.0.0-preview.29.nupkg.sha512"
+  ],
+  "logs": []
+}
