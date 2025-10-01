@@ -101,7 +101,36 @@
   - Test: Returns Content-Disposition header with filename
   - Test: Returns 404 when form not found
 
-### Integration Tests (User Scenarios from quickstart.md)
+- [ ] **T013a** [P] Contract test POST /api/import/yaml in `backend/tests/FormDesigner.Tests.Contract/ImportYamlTests.cs`
+  - Test: Returns 201 on successful import
+  - Test: Returns 400 on invalid YAML format
+  - Test: Returns 200 when updating existing form
+
+- [ ] **T013b** [P] Contract test POST /api/forms/{id}/commit in `backend/tests/FormDesigner.Tests.Contract/CommitFormTests.cs`
+  - Test: Returns 200 on successful commit
+  - Test: Returns 404 when form not found
+  - Test: Returns 409 when already committed
+
+- [ ] **T013c** [P] Contract test GET /api/runtime/forms in `backend/tests/FormDesigner.Tests.Contract/RuntimeFormsTests.cs`
+  - Test: Returns 200 with array of committed forms
+  - Test: Returns empty array when no committed forms
+
+- [ ] **T013d** [P] Contract test POST /api/runtime/instances in `backend/tests/FormDesigner.Tests.Contract/RuntimeInstancesTests.cs`
+  - Test: Returns 201 with instance ID
+  - Test: Returns 404 when form not found
+  - Test: Returns 400 when form not committed
+
+- [ ] **T013e** [P] Contract test PUT /api/runtime/instances/{id}/save in `backend/tests/FormDesigner.Tests.Contract/RuntimeSaveProgressTests.cs`
+  - Test: Returns 200 on successful save
+  - Test: Returns 404 when instance not found
+
+- [ ] **T013f** [P] Contract test POST /api/runtime/instances/{id}/submit in `backend/tests/FormDesigner.Tests.Contract/RuntimeSubmitTests.cs`
+  - Test: Returns 200 on successful submission
+  - Test: Returns 400 on validation failure
+  - Test: Returns 404 when instance not found
+  - Test: Verifies data persisted to SQL tables
+
+### Integration Tests (User Scenarios from spec.md)
 
 - [ ] **T014** [P] Integration test: Create form with single field in `backend/tests/FormDesigner.Tests.Integration/CreateFormWithFieldTests.cs`
   - Maps to Scenario 1 in quickstart.md
@@ -137,6 +166,21 @@
   - Test: DELETE widget → Save → Reload → Verify deletion
   - Test: DELETE section → Verify all widgets removed
 
+- [ ] **T019a** [P] Integration test: YAML export/import workflow in `backend/tests/FormDesigner.Tests.Integration/YamlImportExportTests.cs`
+  - Test: Create form → Export YAML → Import YAML → Verify identical
+  - Test: Resume design from imported YAML
+  - Maps to design mode scenarios 5-6
+
+- [ ] **T019b** [P] Integration test: Commit form workflow in `backend/tests/FormDesigner.Tests.Integration/CommitFormTests.cs`
+  - Test: Create form → Commit → Verify locked for editing
+  - Test: Committed form appears in runtime forms list
+  - Maps to design mode scenario 8
+
+- [ ] **T019c** [P] Integration test: Runtime form execution in `backend/tests/FormDesigner.Tests.Integration/RuntimeExecutionTests.cs`
+  - Test: Create instance → Enter data → Save progress → Resume → Submit
+  - Test: Query submitted data from generated SQL tables
+  - Maps to runtime mode scenarios 13-17
+
 ---
 
 ## Phase 3.3: Data Layer (ONLY after tests are failing)
@@ -144,8 +188,16 @@
 ### Models
 
 - [ ] **T020** [P] Create FormDefinitionEntity in `backend/src/FormDesigner.API/Models/Entities/FormDefinitionEntity.cs`
-  - Properties: FormId (PK), Version, DslJson (JSONB), CreatedAt, UpdatedAt, IsActive
+  - Properties: FormId (PK), Version, DslJson (JSONB), IsCommitted (bool), CreatedAt, UpdatedAt, IsActive
   - Validation attributes: [Key], [Required], [RegularExpression] for FormId
+
+- [ ] **T020a** [P] Create FormInstanceEntity in `backend/src/FormDesigner.API/Models/Entities/FormInstanceEntity.cs`
+  - Properties: InstanceId (PK, GUID), FormId (FK), Status (draft/submitted), DataJson (JSONB), CreatedAt, SubmittedAt
+  - Represents runtime form instance with temporary or submitted data
+
+- [ ] **T020b** [P] Create TemporaryStateEntity in `backend/src/FormDesigner.API/Models/Entities/TemporaryStateEntity.cs`
+  - Properties: StateId (PK, GUID), InstanceId (FK), DataJson (JSONB), SavedAt, UserId (optional)
+  - Stores temporary progress during data entry
 
 - [ ] **T021** [P] Create FormDefinitionRoot DTO in `backend/src/FormDesigner.API/Models/DTOs/FormDefinitionRoot.cs`
   - Property: FormDefinition Form
@@ -197,8 +249,11 @@
 
 - [ ] **T032** Create ApplicationDbContext in `backend/src/FormDesigner.API/Data/ApplicationDbContext.cs`
   - DbSet<FormDefinitionEntity> FormDefinitions
-  - Configure JSONB column type for DslJson
-  - Configure indexes (IsActive, CreatedAt, GIN on DslJson)
+  - DbSet<FormInstanceEntity> FormInstances
+  - DbSet<TemporaryStateEntity> TemporaryStates
+  - Configure JSONB column type for DslJson and DataJson
+  - Configure indexes (IsActive, IsCommitted, CreatedAt, GIN on DslJson)
+  - Configure relationships (FormInstance -> FormDefinition)
   - OnModelCreating with fluent API configuration
 
 - [ ] **T033** Create IFormRepository interface in `backend/src/FormDesigner.API/Data/Repositories/IFormRepository.cs`
@@ -209,6 +264,14 @@
   - CRUD operations using EF Core
   - JSON serialization/deserialization for DslJson
   - Soft delete implementation (set IsActive=false)
+
+- [ ] **T034a** Create IFormInstanceRepository interface in `backend/src/FormDesigner.API/Data/Repositories/IFormInstanceRepository.cs`
+  - Methods: CreateInstanceAsync, GetInstanceAsync, SaveProgressAsync, SubmitInstanceAsync
+
+- [ ] **T034b** Create FormInstanceRepository in `backend/src/FormDesigner.API/Data/Repositories/FormInstanceRepository.cs`
+  - Implement IFormInstanceRepository
+  - Manage form instances and temporary state
+  - Handle data submission to generated SQL tables
 
 ---
 
@@ -247,6 +310,24 @@
   - Map DSL types to PostgreSQL types
   - Translate formulas to SQL expressions (COALESCE for nulls)
 
+- [ ] **T040a** Create IYamlImportService interface in `backend/src/FormDesigner.API/Services/IYamlImportService.cs`
+  - Method: ImportFromYamlAsync(Stream yamlStream)
+
+- [ ] **T040b** Create YamlImportService in `backend/src/FormDesigner.API/Services/YamlImportService.cs`
+  - Implement IYamlImportService
+  - Parse YAML file using YamlDotNet
+  - Validate form definition
+  - Create or update form in repository
+
+- [ ] **T040c** Create IRuntimeService interface in `backend/src/FormDesigner.API/Services/IRuntimeService.cs`
+  - Methods: GetCommittedFormsAsync, CreateInstanceAsync, GetInstanceAsync, SaveProgressAsync, SubmitInstanceAsync
+
+- [ ] **T040d** Create RuntimeService in `backend/src/FormDesigner.API/Services/RuntimeService.cs`
+  - Implement IRuntimeService
+  - Manage form instances
+  - Handle temporary state saving
+  - Validate and submit data to generated SQL tables
+
 ---
 
 ## Phase 3.5: Validation
@@ -274,8 +355,21 @@
 
 - [ ] **T043** Create ExportController in `backend/src/FormDesigner.API/Controllers/ExportController.cs`
   - GET /api/export/{id}/yaml → ExportYaml(string id) → Call YamlExportService → Return File() with application/x-yaml
+  - POST /api/import/yaml → ImportYaml(IFormFile) → Parse YAML → Call FormBuilderService.CreateOrUpdateFormAsync()
   - GET /api/export/{id}/sql → ExportSql(string id) → Call SqlGeneratorService → Return File() with text/plain
   - Set Content-Disposition headers with filenames
+
+- [ ] **T043a** Add commit form endpoint in FormDefinitionController
+  - POST /api/forms/{id}/commit → CommitForm(string id) → Call FormBuilderService.CommitFormAsync()
+  - Set is_committed=true, prevent further edits
+  - Return 200 on success, 404 if not found, 409 if already committed
+
+- [ ] **T043b** Create RuntimeController in `backend/src/FormDesigner.API/Controllers/RuntimeController.cs`
+  - GET /api/runtime/forms → GetCommittedForms() → List all committed forms available for runtime
+  - POST /api/runtime/instances → CreateInstance(formId) → Create new form instance for data entry
+  - GET /api/runtime/instances/{instanceId} → GetInstance(instanceId) → Get form instance with data
+  - PUT /api/runtime/instances/{instanceId}/save → SaveProgress(instanceId, data) → Save temporary state
+  - POST /api/runtime/instances/{instanceId}/submit → Submit(instanceId, data) → Validate and persist to database
 
 ---
 
@@ -322,12 +416,12 @@
 
 ---
 
-## Phase 3.10: Frontend - JavaScript Core
+## Phase 3.10: Frontend - JavaScript Core (Design Mode)
 
 - [ ] **T047** Create designer.js skeleton in `backend/src/FormDesigner.API/wwwroot/js/designer.js`
   - IIFE pattern: (function($) { ... })(jQuery)
   - API configuration object: base URL, endpoint methods
-  - DesignerState object: formDefinition, currentPageId, selectedWidget, isDirty
+  - DesignerState object: formDefinition, currentPageId, selectedWidget, isDirty, isCommitted
   - WidgetTemplates object: field, group, table, grid, checklist
   - initDesigner() function: entry point
   - $(document).ready(initDesigner)
@@ -372,9 +466,11 @@
   - openForm(): GET /api/forms, show modal, load selected form
   - loadForm(formData): populate state, render all pages/sections/widgets
   - newForm(): confirm unsaved changes, clear state, reset UI
+  - commitForm(): POST /api/forms/{id}/commit, lock form for editing
 
-- [ ] **T054** Implement export operations in designer.js
+- [ ] **T054** Implement export/import operations in designer.js
   - exportYaml(): GET /api/export/{id}/yaml, trigger download
+  - importYaml(): POST /api/import/yaml with file upload
   - exportSql(): GET /api/export/{id}/sql, trigger download
 
 - [ ] **T055** Implement validation in designer.js
@@ -384,6 +480,29 @@
   - checkDuplicateIds(): scan all widgets, highlight duplicates
   - markDirty(): set isDirty=true
   - unsavedChangesWarning(): beforeunload event, show warning if isDirty
+
+---
+
+## Phase 3.10a: Frontend - JavaScript Runtime Mode
+
+- [ ] **T055a** Create runtime.html in `backend/src/FormDesigner.API/wwwroot/runtime.html`
+  - HTML structure for form execution
+  - Form selector dropdown (committed forms)
+  - Form rendering area
+  - Save Progress and Submit buttons
+
+- [ ] **T055b** Create runtime.js in `backend/src/FormDesigner.API/wwwroot/js/runtime.js`
+  - RuntimeState object: currentInstance, formDefinition, formData
+  - loadCommittedForms(): GET /api/runtime/forms
+  - createInstance(formId): POST /api/runtime/instances
+  - renderForm(formDefinition): generate form HTML from definition
+  - saveProgress(): PUT /api/runtime/instances/{id}/save
+  - submitForm(): POST /api/runtime/instances/{id}/submit
+
+- [ ] **T055c** Create runtime.css in `backend/src/FormDesigner.API/wwwroot/css/runtime.css`
+  - Styles for runtime form rendering
+  - Different from designer (no drag-drop, simpler layout)
+  - Form field styles, table input styles
 
 ---
 
@@ -409,7 +528,22 @@
   - Test: UpdateFormAsync sets UpdatedAt timestamp
   - Test: DeleteFormAsync sets IsActive=false (soft delete)
   - Test: ValidateFormAsync calls FluentValidation
+  - Test: CommitFormAsync sets IsCommitted=true
+  - Test: CommitFormAsync prevents editing committed forms
   - Mock IFormRepository
+
+- [ ] **T058a** [P] Unit tests for YamlImportService in `backend/tests/FormDesigner.Tests.Unit/Services/YamlImportServiceTests.cs`
+  - Test: Imports valid YAML and creates form
+  - Test: Handles invalid YAML format
+  - Test: Updates existing form if ID matches
+  - Mock IFormRepository
+
+- [ ] **T058b** [P] Unit tests for RuntimeService in `backend/tests/FormDesigner.Tests.Unit/Services/RuntimeServiceTests.cs`
+  - Test: CreateInstanceAsync creates new instance
+  - Test: SaveProgressAsync stores temporary state
+  - Test: SubmitInstanceAsync validates and persists data
+  - Test: Cannot submit incomplete required fields
+  - Mock IFormInstanceRepository
 
 ---
 
@@ -431,8 +565,19 @@
   - Verify all 6 endpoints listed
   - Test endpoints via Swagger UI
 
-- [ ] **T062** Manual testing: Run quickstart scenarios
-  - Execute all 10 scenarios from quickstart.md
+- [ ] **T062** Manual testing: Run design mode scenarios
+  - Execute all 12 design mode scenarios from spec.md
+  - Test YAML export/import workflow
+  - Test commit functionality
+  - Document results in test log
+  - Fix any failures found
+
+- [ ] **T062a** Manual testing: Run runtime mode scenarios
+  - Execute all 5 runtime mode scenarios from spec.md
+  - Test form instance creation
+  - Test save progress and resume
+  - Test data submission to database
+  - Query submitted data from generated SQL tables
   - Document results in test log
   - Fix any failures found
 
@@ -524,19 +669,20 @@
 - Mark tasks complete after tests pass (not when code written)
 - Commit after each logical group (e.g., all contract tests)
 - Create GitHub issues for major phases:
-  - Issue #1: Setup & Infrastructure (T001-T006)
-  - Issue #2: Contract Tests (T007-T013)
-  - Issue #3: Integration Tests (T014-T019)
-  - Issue #4: Data Models (T020-T031)
-  - Issue #5: Database Layer (T032-T034)
-  - Issue #6: Service Layer (T035-T040)
+  - Issue #1: Setup & Infrastructure (T001-T006) ✅
+  - Issue #2: Contract Tests (T007-T013f) ✅
+  - Issue #3: Integration Tests (T014-T019c) ✅
+  - Issue #4: Data Models (T020-T031, T020a-T020b)
+  - Issue #5: Database Layer (T032-T034, T034a-T034b)
+  - Issue #6: Service Layer (T035-T040, T040a-T040d)
   - Issue #7: Validation (T041)
-  - Issue #8: Controllers (T042-T043)
+  - Issue #8: Controllers (T042-T043, T043a-T043b)
   - Issue #9: Configuration (T044)
   - Issue #10: Frontend HTML/CSS (T045-T046)
-  - Issue #11: Frontend JavaScript (T047-T055)
-  - Issue #12: Unit Tests (T056-T058)
-  - Issue #13: Integration & Deployment (T059-T062)
+  - Issue #11: Frontend JavaScript - Design Mode (T047-T055)
+  - Issue #11a: Frontend JavaScript - Runtime Mode (T055a-T055c)
+  - Issue #12: Unit Tests (T056-T058, T058a-T058b)
+  - Issue #13: Integration & Deployment (T059-T062, T062a)
   - Issue #14: Polish & Documentation (T063-T068)
 
 - Use conventional commits:
@@ -565,6 +711,17 @@
 
 ---
 
-**Total Tasks**: 68 tasks
-**Estimated Parallel Groups**: 4 groups (32 tasks can run in parallel across groups)
-**Estimated Effort**: 80-120 hours (depending on developer familiarity with stack)
+**Total Tasks**: 88 tasks (68 original + 20 new for design/runtime modes)
+**New Tasks Added**:
+- 6 contract tests for YAML import, commit, runtime endpoints (T013a-T013f)
+- 3 integration tests for YAML import/export, commit, runtime (T019a-T019c)
+- 3 runtime entities (T020a-T020b)
+- 2 runtime repositories (T034a-T034b)
+- 4 runtime services (T040a-T040d)
+- 2 runtime controllers (T043a-T043b)
+- 3 runtime frontend (T055a-T055c)
+- 2 runtime unit tests (T058a-T058b)
+- 1 runtime manual testing (T062a)
+
+**Estimated Parallel Groups**: 5 groups (42 tasks can run in parallel across groups)
+**Estimated Effort**: 100-150 hours (depending on developer familiarity with stack)
