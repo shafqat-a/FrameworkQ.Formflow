@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/shafqat/git/FrameworkQ.Formflow/backend/src/FormDesigner.API/FormDesigner.API/FormDesigner.API.csproj": {}
+    "/Users/shafqat/git/FrameworkQ.Formflow/backend/src/FormDesigner.API/FormDesigner.API.csproj": {}
   },
   "projects": {
-    "/Users/shafqat/git/FrameworkQ.Formflow/backend/src/FormDesigner.API/FormDesigner.API/FormDesigner.API.csproj": {
+    "/Users/shafqat/git/FrameworkQ.Formflow/backend/src/FormDesigner.API/FormDesigner.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/shafqat/git/FrameworkQ.Formflow/backend/src/FormDesigner.API/FormDesigner.API/FormDesigner.API.csproj",
+        "projectUniqueName": "/Users/shafqat/git/FrameworkQ.Formflow/backend/src/FormDesigner.API/FormDesigner.API.csproj",
         "projectName": "FormDesigner.API",
-        "projectPath": "/Users/shafqat/git/FrameworkQ.Formflow/backend/src/FormDesigner.API/FormDesigner.API/FormDesigner.API.csproj",
+        "projectPath": "/Users/shafqat/git/FrameworkQ.Formflow/backend/src/FormDesigner.API/FormDesigner.API.csproj",
         "packagesPath": "/Users/shafqat/.nuget/packages/",
-        "outputPath": "/Users/shafqat/git/FrameworkQ.Formflow/backend/src/FormDesigner.API/FormDesigner.API/obj/",
+        "outputPath": "/Users/shafqat/git/FrameworkQ.Formflow/backend/src/FormDesigner.API/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/shafqat/.nuget/NuGet/NuGet.Config"
@@ -44,9 +44,29 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "dependencies": {
+            "FluentValidation.AspNetCore": {
+              "target": "Package",
+              "version": "[11.3.0, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[10.0.0-preview.6.25358.103, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.5.0, )"
+            },
+            "YamlDotNet": {
+              "target": "Package",
+              "version": "[13.7.1, )"
             }
           },
           "imports": [
