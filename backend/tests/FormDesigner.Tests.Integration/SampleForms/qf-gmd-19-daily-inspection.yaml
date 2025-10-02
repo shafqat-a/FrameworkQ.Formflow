@@ -1,0 +1,202 @@
+form:
+  id: qf-gmd-19
+  title: Sub-Station Daily Inspection Check Sheet
+  version: "01"
+
+  pages:
+    - id: page-1
+      title: Daily Inspection - Shift B
+      sections:
+        - id: section-header
+          title: Form Header
+          widgets:
+            - type: formheader
+              id: header-widget
+              title: Document Header
+              formheader:
+                document_no: QF-GMD-19
+                revision_no: "01"
+                effective_date: 12/12/12
+                page_number: 2 of 2
+                organization: POWER GRID COMPANY OF BANGLADESH LTD.
+                form_title: SUB-STATION DAILY INSPECTION CHECK SHEET
+                category: QUALITY FORMS
+
+        - id: section-shift-info
+          title: Shift Information
+          widgets:
+            - type: notes
+              id: shift-title
+              title: Shift Title
+              notes:
+                style: info
+                content: "Shift – B (From 14:00 hr. to 22:00 hr.)"
+
+        - id: section-inspection-items
+          title: Inspection Items
+          widgets:
+            - type: hierarchicalchecklist
+              id: daily-inspection
+              title: Daily Inspection Checklist
+              hierarchicalchecklist:
+                items:
+                  - key: section-a
+                    label: "উপকেন্দ্রের ৩"
+                    type: checkbox
+                    number: "ক"
+
+                  - key: section-b
+                    label: "জরতেক ট্রান্সফরমারের জন্য পৃথক কোম্পানে থাকবে।"
+                    type: checkbox
+                    number: "★"
+
+                  - key: section-c
+                    label: "ট্রান্সফরমারের স্থানিক ফ্যান, গাম্মা"
+                    type: text
+                    number: "(ক)"
+                    placeholder: "চালু / বন্ধ"
+
+                  - key: section-d
+                    label: "ট্রান্সফরমারের অবেক্স এবং অয়াক্তির Temp পর্তবেকশন ও লিপিবদ্ধকরণ ঃ"
+                    type: text
+                    number: "(খ)"
+                    placeholder: "তাপমাত্রা"
+                    children:
+                      - key: winding-oil
+                        label: "Winding / Oil"
+                        type: text
+
+                  - key: section-e
+                    label: "শীড ভোল্টেক্স / ট্রান্সফরমারের দেগাওয়াট/ অিল্যার পরিবকন"
+                    type: select
+                    number: "(গ)"
+                    options:
+                      - ভোট
+                      - মধ্য ওয়া
+                      - অবস্থা
+
+                  - key: section-f
+                    label: "সিলিকা জেল"
+                    type: checkbox
+                    number: "(ঘ)"
+
+                  - key: section-g
+                    label: "টেল নেভেল"
+                    type: checkbox
+                    number: "(ঙ)"
+
+                  - key: section-h
+                    label: "টেল দিকেঞ্জা"
+                    type: checkbox
+                    number: "(চ)"
+
+                  - key: section-i
+                    label: "বুশিং"
+                    type: checkbox
+                    number: "(ছ)"
+
+                  - key: section-j
+                    label: "ট্রান্সফরমারের নিজোটসমহ অন্যান্য যন্ত্রপাতির প্রাউভিস সচিক আছে কিনা ?"
+                    type: checkbox
+                    number: "(জ)"
+
+                  - key: section-k
+                    label: "সার্কিট ব্রেকার (শীর্ণের আওতাভুক্ত)"
+                    type: checkbox
+                    number: "৪"
+
+                  - key: section-l
+                    label: "৩৩ কেভি ইনকামার সহ সকল ১৩২কেভি ব্রেকারের জন্য"
+                    type: checkbox
+                    number: "★"
+
+                  - key: section-m
+                    label: "গ্যাস ও হাইড্রুলিক অবেমা প্রেশার পর্তবেকশন ও লিপিবদ্ধ করুন।"
+                    type: text
+                    number: "(ক)"
+                    children:
+                      - key: gas-pressure
+                        label: "গ্যাস প্রেশার"
+                        type: text
+                      - key: hydraulic-pressure
+                        label: "হাইড্রুলিক প্রেশার"
+                        type: text
+
+                  - key: section-n
+                    label: "বেকার কেরিনেটে অবস্থিত রিলেসমুহর কোন ক্লাগ পড়েছে কিনা বা সমস্যা আছে কিনা ? তাহা অবস্থিষ্করণ ও ব্যবস্থা গ্রহণঃ"
+                    type: text
+                    number: "(খ)"
+                    children:
+                      - key: breaker-cabinet
+                        label: "ব্রেকার কেরিনেট"
+                      - key: relay-abnormality
+                        label: "রিলের অবস্থা"
+
+                  - key: section-o
+                    label: "ট্রিপ সার্কি সুপারভিশনঃ"
+                    type: checkbox
+                    number: "(গ)"
+
+                  - key: section-p
+                    label: "সুইচ ইয়ার্ড ঃ বলবারিং"
+                    type: checkbox
+                    number: "৫"
+
+                  - key: section-q
+                    label: "২৩০/১৩২ কেভি ও ৩৩ কেভি (শীর্ণের অঞ্চলে) বাল-হাবের বিশিক জচেয়ে Red Hot হচ্ছে কি না ? ঢাকুস পরিবকন করা ঃ (প্রতি সত্তাহে Thermovision / Infra-red গান/ক্যারেরা দিয়ে পরীক্ষা ও প্রোবোয়াল্লীয় ব্যবস্থা গ্রহণ / দিবণ্ণতিঃ)"
+                    type: select
+                    number: "(ক)"
+                    options:
+                      - সঠিক
+                      - সমস্যা
+
+                numbering_style: manual
+                show_numbering: true
+                indent_size: 15
+
+        - id: section-shift-signatures
+          title: Shift Signatures
+          widgets:
+            - type: signature
+              id: sig-shift-b-p2
+              title: Signature of Shift-in-Charge (B shift)
+              signature:
+                role: Signature of Shift-in-Charge (B shift)
+                show_designation: false
+                show_date: false
+
+            - type: signature
+              id: sig-shift-c-p2
+              title: Signature of Shift-in-Charge (C shift)
+              signature:
+                role: Signature of Shift-in-Charge (C shift)
+                show_designation: false
+                show_date: false
+
+            - type: signature
+              id: sig-shift-a-p2
+              title: Signature of Shift-in-Charge (A shift)
+              signature:
+                role: Signature of Shift-in-Charge (A shift)
+                show_designation: false
+                show_date: false
+
+            - type: signature
+              id: sig-station-final
+              title: Signature of Station in Charge
+              signature:
+                role: Signature of Station in Charge
+                designation_label: Assistant Manager / Deputy Manager
+                show_designation: true
+                show_date: false
+
+  metadata:
+    organization: Power Grid Company of Bangladesh
+    document_number: QF-GMD-19
+    effective_date: 2012-12-12
+    revision: "01"
+    tags:
+      - daily-inspection
+      - checklist
+      - bengali-language
+      - quality-management

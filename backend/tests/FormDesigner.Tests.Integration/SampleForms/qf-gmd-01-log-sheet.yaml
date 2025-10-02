@@ -1,0 +1,304 @@
+form:
+  id: qf-gmd-01
+  title: Log Sheet
+  version: "00"
+
+  pages:
+    - id: page-1
+      title: Log Sheet - First Shift
+      sections:
+        - id: section-header
+          title: Form Header
+          widgets:
+            - type: formheader
+              id: header-widget
+              title: Document Header
+              formheader:
+                document_no: QF-GMD-01
+                revision_no: "00"
+                effective_date: 15/02/07
+                page_number: 1 of 2
+                organization: POWER GRID COMPANY OF BANGLADESH LTD.
+                form_title: LOG SHEET
+                category: Quality Forms
+
+        - id: section-substation-info
+          title: Sub-Station Information
+          widgets:
+            - type: field
+              id: commissioning-date
+              title: Commissioning Date
+              field:
+                type: date
+
+            - type: field
+              id: grid-substation
+              title: Grid Sub-Station
+              field:
+                type: text
+                required: true
+
+            - type: field
+              id: date-field
+              title: Date
+              field:
+                type: date
+                required: true
+
+            - type: field
+              id: day-field
+              title: Day
+              field:
+                type: text
+
+        - id: section-transformer-readings
+          title: Transformer Readings
+          widgets:
+            - type: table
+              id: transformer-readings
+              title: Transformer TR # Hourly Readings
+              table:
+                row_mode: finite
+                min: 8
+                max: 8
+                allow_add_rows: false
+                allow_delete_rows: false
+                columns:
+                  - name: time
+                    label: Time
+                    type: string
+                    required: true
+
+                  - name: kv_bus
+                    label: kV bus
+                    type: decimal
+
+                  - name: pf
+                    label: PF
+                    type: decimal
+
+                  - name: mw
+                    label: MW
+                    type: decimal
+
+                  - name: mvar
+                    label: MVAR
+                    type: decimal
+
+                  - name: ampere
+                    label: Ampere
+                    type: decimal
+
+                  - name: tap
+                    label: TAP
+                    type: string
+
+                  - name: temp
+                    label: Temp
+                    type: decimal
+
+                  - name: winding_oil_temp
+                    label: Winding Oil Temp
+                    type: decimal
+
+                  - name: kv_side_pf
+                    label: kV side PF
+                    type: decimal
+
+                  - name: kv_side_mw
+                    label: kV side MW
+                    type: decimal
+
+                  - name: kv_side_mvar
+                    label: kV side MVAR
+                    type: decimal
+
+                  - name: kv_side_ampere
+                    label: kV side Ampere
+                    type: decimal
+
+                  - name: kv_side_temp
+                    label: kV side Temp
+                    type: decimal
+
+                  - name: kv_side_winding_oil
+                    label: kV side Winding Oil Temp
+                    type: decimal
+
+        - id: section-oltc-readings
+          title: OLTC Counter & Energy Readings
+          widgets:
+            - type: field
+              id: oltc-12hr
+              title: OLTC counter readings At 12.00 Hr
+              field:
+                type: integer
+
+            - type: field
+              id: energy-12hr
+              title: Energy readings At 12.00 Hr
+              field:
+                type: decimal
+
+        - id: section-shift-signature
+          title: Shift Signature
+          widgets:
+            - type: signature
+              id: sig-shift-a
+              title: Signature of Shift-in-Charge (A shift)
+              signature:
+                role: Signature of Shift-in-Charge (A shift)
+                show_designation: false
+                show_date: false
+
+            - type: signature
+              id: sig-shift-b
+              title: Signature of Shift-in-Charge (B shift)
+              signature:
+                role: Signature of Shift-in-Charge (B shift)
+                show_designation: false
+                show_date: false
+
+    - id: page-2
+      title: Log Sheet - Second & Third Shift
+      sections:
+        - id: section-header-p2
+          title: Form Header
+          widgets:
+            - type: formheader
+              id: header-widget-p2
+              title: Document Header Page 2
+              formheader:
+                document_no: QF-GMD-01
+                revision_no: "00"
+                effective_date: 15/02/07
+                page_number: 2 of 2
+                organization: POWER GRID COMPANY OF BANGLADESH LTD.
+                form_title: LOG SHEET
+                category: Quality Forms
+
+        - id: section-readings-afternoon
+          title: Afternoon Shift Readings (15:00-22:00)
+          widgets:
+            - type: table
+              id: readings-afternoon
+              title: Hourly Readings - Afternoon
+              table:
+                row_mode: finite
+                min: 8
+                max: 8
+                allow_add_rows: false
+                allow_delete_rows: false
+                columns:
+                  - name: time_aft
+                    label: Time
+                    type: string
+                    required: true
+
+                  - name: kv_aft
+                    label: kV
+                    type: decimal
+
+                  - name: mw_aft
+                    label: MW
+                    type: decimal
+
+                  - name: mvar_aft
+                    label: MVAR
+                    type: decimal
+
+                  - name: amp_aft
+                    label: Ampere
+                    type: decimal
+
+        - id: section-readings-night
+          title: Night Shift Readings (23:00-06:00)
+          widgets:
+            - type: table
+              id: readings-night
+              title: Hourly Readings - Night
+              table:
+                row_mode: finite
+                min: 8
+                max: 8
+                allow_add_rows: false
+                allow_delete_rows: false
+                columns:
+                  - name: time_night
+                    label: Time
+                    type: string
+                    required: true
+
+                  - name: kv_night
+                    label: kV
+                    type: decimal
+
+                  - name: mw_night
+                    label: MW
+                    type: decimal
+
+                  - name: mvar_night
+                    label: MVAR
+                    type: decimal
+
+                  - name: amp_night
+                    label: Ampere
+                    type: decimal
+
+        - id: section-final-signatures
+          title: Final Signatures
+          widgets:
+            - type: signature
+              id: sig-shift-b-final
+              title: Signature of Shift-in-Charge (B shift)
+              signature:
+                role: Signature of Shift-in-Charge (B shift)
+                show_designation: false
+                show_date: false
+
+            - type: signature
+              id: sig-shift-c
+              title: Signature of Shift-in-Charge (C shift)
+              signature:
+                role: Signature of Shift-in-Charge (C shift)
+                show_designation: false
+                show_date: false
+
+            - type: signature
+              id: sig-station-charge
+              title: Signature of Station in Charge
+              signature:
+                role: Signature of Station in Charge
+                designation_label: Assistant Manager / Deputy Manager
+                show_designation: true
+                show_date: false
+
+        - id: section-final-approval
+          title: Final Approval
+          widgets:
+            - type: signature
+              id: sig-reviewed-final
+              title: Reviewed By (GMT-1)
+              signature:
+                role: Reviewed By (GMT-1)
+                show_designation: false
+                show_date: true
+
+            - type: signature
+              id: sig-approved-final
+              title: Approved By (DT)
+              signature:
+                role: Approved By (DT)
+                show_designation: false
+                show_date: true
+
+  metadata:
+    organization: Power Grid Company of Bangladesh
+    document_number: QF-GMD-01
+    effective_date: 2007-02-15
+    revision: "00"
+    tags:
+      - log-sheet
+      - hourly-readings
+      - transformer
+      - quality-management
