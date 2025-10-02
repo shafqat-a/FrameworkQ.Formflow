@@ -705,17 +705,15 @@ const FormDesigner = {
     },
 
     previewForm() {
-        const formData = this.collectFormData();
-
-        if (!formData.form.pages || formData.form.pages.length === 0) {
+        if (!this.state.currentForm || !this.state.currentForm.pages || this.state.currentForm.pages.length === 0) {
             this.showMessage('Form is empty. Add some widgets to preview.', 'warning');
             return;
         }
 
-        // Initialize preview state
+        // Initialize preview state - use current in-memory form
         this.previewState = {
             currentPageIndex: 0,
-            form: formData.form
+            form: this.state.currentForm
         };
 
         // Render preview
