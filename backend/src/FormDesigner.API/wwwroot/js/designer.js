@@ -190,6 +190,69 @@ const FormDesigner = {
                 return {
                     widgets: []
                 };
+            case 'formheader':
+                return {
+                    document_no: '',
+                    revision_no: '',
+                    effective_date: '',
+                    page_number: '',
+                    organization: '',
+                    form_title: '',
+                    category: 'QUALITY FORMS',
+                    show_on_all_pages: true
+                };
+            case 'signature':
+                return {
+                    role: '',
+                    name_label: 'Name',
+                    name_required: true,
+                    designation_label: 'Designation',
+                    show_designation: true,
+                    date_label: 'Date',
+                    show_date: true,
+                    auto_date: false,
+                    require_signature_image: false,
+                    signature_type: 'draw',
+                    signature_width: 400,
+                    signature_height: 100
+                };
+            case 'notes':
+                return {
+                    content: '',
+                    style: 'info',
+                    title: '',
+                    markdown: false,
+                    collapsible: false,
+                    collapsed: false
+                };
+            case 'hierarchicalchecklist':
+                return {
+                    items: [],
+                    numbering_style: 'decimal',
+                    show_numbering: true,
+                    indent_size: 20,
+                    all_required: false
+                };
+            case 'radiogroup':
+                return {
+                    options: [],
+                    orientation: 'horizontal',
+                    required: false,
+                    default_value: null,
+                    button_style: false,
+                    spacing: 10
+                };
+            case 'checkboxgroup':
+                return {
+                    options: [],
+                    orientation: 'vertical',
+                    min_selections: null,
+                    max_selections: null,
+                    default_values: [],
+                    grid_columns: 2,
+                    show_select_all: false,
+                    spacing: 10
+                };
             default:
                 return {};
         }
@@ -255,6 +318,8 @@ const FormDesigner = {
                         <option value="text" ${widget.spec.type === 'text' ? 'selected' : ''}>Text</option>
                         <option value="number" ${widget.spec.type === 'number' ? 'selected' : ''}>Number</option>
                         <option value="date" ${widget.spec.type === 'date' ? 'selected' : ''}>Date</option>
+                        <option value="time" ${widget.spec.type === 'time' ? 'selected' : ''}>Time</option>
+                        <option value="datetime" ${widget.spec.type === 'datetime' ? 'selected' : ''}>Date & Time</option>
                         <option value="email" ${widget.spec.type === 'email' ? 'selected' : ''}>Email</option>
                         <option value="tel" ${widget.spec.type === 'tel' ? 'selected' : ''}>Phone</option>
                         <option value="select" ${widget.spec.type === 'select' ? 'selected' : ''}>Select</option>
