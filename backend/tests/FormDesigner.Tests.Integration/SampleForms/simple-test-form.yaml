@@ -1,0 +1,31 @@
+form:
+  id: simple-test
+  title: Simple Test Form
+  version: "1.0"
+  pages:
+    - id: page-1
+      title: Test Page
+      sections:
+        - id: section-1
+          title: Basic Fields
+          widgets:
+            - type: field
+              id: first-name
+              field:
+                type: text
+                required: true
+                placeholder: Enter first name
+
+            - type: field
+              id: last-name
+              field:
+                type: text
+                required: true
+                placeholder: Enter last name
+
+            - type: field
+              id: email
+              field:
+                type: email
+                required: true
+                placeholder: user@example.com

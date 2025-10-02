@@ -634,7 +634,8 @@ const FormDesigner = {
             const response = await fetch(`/api/forms/${formId}`);
             const data = await response.json();
 
-            this.state.currentForm = data.form;
+            // Convert from API DTO format to Designer internal format
+            this.state.currentForm = WidgetConverter.formFromDTO(data.form);
             this.state.isDirty = false;
 
             // Update UI
@@ -1136,14 +1137,15 @@ const FormDesigner = {
             }
         });
 
-        return {
-            form: {
-                id: formId,
-                title: formTitle,
-                version: formVersion,
-                pages: this.state.currentForm.pages
-            }
+        const designerForm = {
+            id: formId,
+            title: formTitle,
+            version: formVersion,
+            pages: this.state.currentForm.pages
         };
+
+        // Convert to API DTO format
+        return WidgetConverter.formToDTO(designerForm);
     },
 
     // Render table column editor
