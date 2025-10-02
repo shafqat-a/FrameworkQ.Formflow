@@ -1,0 +1,289 @@
+form:
+  id: qf-gmd-17
+  title: Surveillance Visit of Sub-Station
+  version: "01"
+
+  pages:
+    - id: page-1
+      title: Surveillance Visit Checklist
+      sections:
+        - id: section-header
+          title: Form Header
+          widgets:
+            - type: formheader
+              id: header-widget
+              title: Document Header
+              formheader:
+                document_no: QF-GMD-17
+                revision_no: "01"
+                effective_date: 03/03/15
+                page_number: 1 of 1
+                organization: POWER GRID COMPANY OF BANGLADESH LTD.
+                form_title: SURVEILLANCE VISIT OF SUB-STATION
+                category: QUALITY FORMS
+                show_on_all_pages: true
+
+        - id: section-basic-info
+          title: Basic Information
+          widgets:
+            - type: field
+              id: office-substation
+              title: Name of the Office / Sub-station
+              field:
+                type: text
+                required: true
+
+            - type: field
+              id: name-designation
+              title: Name & Designation
+              field:
+                type: text
+                required: true
+
+            - type: field
+              id: inspection-datetime
+              title: Date & time inspection
+              field:
+                type: datetime
+                required: true
+
+        - id: section-inspection
+          title: Inspection Checklist
+          widgets:
+            - type: hierarchicalchecklist
+              id: inspection-items
+              title: Inspection Items
+              hierarchicalchecklist:
+                items:
+                  - key: transformer
+                    label: Transformer
+                    type: checkbox
+                    number: "1.0"
+                    children:
+                      - key: silica-gel
+                        label: Silica gel
+                        type: select
+                        number: "1.1"
+                        options:
+                          - Good/Acceptable/Poor
+                      - key: oil-level
+                        label: Oil level
+                        type: select
+                        number: "1.2"
+                        options:
+                          - Good/Acceptable/Poor
+                      - key: oil-test
+                        label: Oil Test
+                        type: select
+                        number: "1.3"
+                        options:
+                          - Good/Acceptable/Poor
+                      - key: oil-leakage
+                        label: Oil leakage
+                        type: select
+                        number: "1.4"
+                        options:
+                          - Yes/No
+                      - key: tap-changer
+                        label: Functioning of Tap Changer
+                        type: select
+                        number: "1.5"
+                        options:
+                          - Healthy/Defective
+
+                  - key: circuit-breaker
+                    label: Circuit Breaker
+                    type: checkbox
+                    number: "2.0"
+                    children:
+                      - key: physical-condition
+                        label: Physical Condition
+                        type: select
+                        number: "2.1"
+                        options:
+                          - Good/Acceptable/Poor
+                      - key: gas-leakage
+                        label: SF₆ Gas/Air/Oil Leakage
+                        type: select
+                        number: "2.2"
+                        options:
+                          - Yes/No
+                      - key: remote-operation
+                        label: Remote Operation
+                        type: select
+                        number: "2.3"
+                        options:
+                          - Healthy/Defective
+                      - key: trip-supervision
+                        label: Trip circuit supervision
+                        type: select
+                        number: "2.4"
+                        options:
+                          - Healthy/Defective
+
+                  - key: battery
+                    label: Battery & Battery Charger
+                    type: checkbox
+                    number: "3.0"
+                    children:
+                      - key: battery-physical
+                        label: Physical Condition
+                        type: select
+                        number: "3.1"
+                        options:
+                          - Good/Acceptable/Poor
+                      - key: electrolyte
+                        label: Cleanliness & Electrolyte Content
+                        type: select
+                        number: "3.2"
+                        options:
+                          - Good/Acceptable/Poor
+                      - key: load-test
+                        label: Load Test Report
+                        type: select
+                        number: "3.2"
+                        options:
+                          - Good/Acceptable/Poor
+
+                  - key: control-panel
+                    label: Control Panel
+                    type: checkbox
+                    number: "4.0"
+                    children:
+                      - key: indication-lamp
+                        label: Indication lamp
+                        type: select
+                        number: "4.1"
+                        options:
+                          - Healthy/Defective
+                      - key: annunciation
+                        label: Annunciation
+                        type: select
+                        number: "4.2"
+                        options:
+                          - Healthy/Defective
+                      - key: light-heater
+                        label: Light & Heater
+                        type: select
+                        number: "4.3"
+                        options:
+                          - Healthy/Defective
+                      - key: cleanliness
+                        label: Cleanliness
+                        type: select
+                        number: "4.4"
+                        options:
+                          - Good/Acceptable/Poor
+
+                  - key: relay-panel
+                    label: Relay Panel
+                    type: checkbox
+                    number: "5.0"
+                    children:
+                      - key: relay-functions
+                        label: Relay Functions
+                        type: select
+                        number: "5.1"
+                        options:
+                          - Healthy/Defective
+                      - key: relay-light-heater
+                        label: Light & Heater
+                        type: select
+                        number: "5.2"
+                        options:
+                          - Healthy/Defective
+                      - key: relay-cleanliness
+                        label: Cleanliness
+                        type: select
+                        number: "5.3"
+                        options:
+                          - Good/Acceptable/Poor
+
+                  - key: capacitor
+                    label: Capacitor Bank Functionality
+                    type: select
+                    number: "6"
+                    options:
+                      - Healthy/Defective
+
+                  - key: earth-resistance
+                    label: Earth Resistance
+                    type: select
+                    number: "7"
+                    options:
+                      - Good/Acceptable/Poor
+
+                  - key: dfdr
+                    label: DFDR Functionality
+                    type: select
+                    number: "8"
+                    options:
+                      - Healthy/Defective
+
+                  - key: fire-fighting
+                    label: Fire Fighting equipment
+                    type: select
+                    number: "9"
+                    options:
+                      - Good/Acceptable/Poor
+
+                  - key: hot-spot
+                    label: Hot spot measurement
+                    type: select
+                    number: "10"
+                    options:
+                      - Good/Acceptable/Poor
+
+                  - key: maintenance
+                    label: Maintenance work schedule
+                    type: select
+                    number: "11"
+                    options:
+                      - Good/Acceptable/Poor
+
+                numbering_style: decimal
+                show_numbering: true
+                indent_size: 20
+
+        - id: section-signatures
+          title: Signatures
+          widgets:
+            - type: signature
+              id: sig-reviewed
+              title: Reviewed by
+              signature:
+                role: Reviewed by (GMT-1)
+                name_label: Name
+                name_required: true
+                show_designation: true
+                designation_label: Designation
+                show_date: true
+                date_label: Date
+
+            - type: signature
+              id: sig-approved
+              title: Approved by
+              signature:
+                role: Approved by (DT)
+                name_label: Name
+                name_required: true
+                show_designation: true
+                designation_label: Designation
+                show_date: true
+                date_label: Date
+
+  metadata:
+    organization: Power Grid Company of Bangladesh
+    document_number: QF-GMD-17
+    effective_date: 2015-03-03
+    revision: "01"
+    tags:
+      - quality-management
+      - surveillance
+      - substation
+      - inspection
+
+  options:
+    print:
+      orientation: portrait
+      page_size: a4
