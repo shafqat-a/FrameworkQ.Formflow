@@ -1,0 +1,168 @@
+form:
+  id: qf-gmd-22-complete
+  title: Inspection & Maintenance of Power Transformer
+  version: "1"
+  pages:
+    - id: page-1
+      title: Transformer Inspection
+      sections:
+        - id: section-header
+          title: Form Header
+          widgets:
+            - type: formheader
+              id: doc-header
+              form_header:
+                document_no: QF-GMD-22
+                revision_no: "1"
+                effective_date: 28/01/16
+                page_number: 1 of 2
+                organization: POWER GRID COMPANY OF BANGLADESH LTD.
+                form_title: INSPECTION & MAINTENANCE OF POWER TRANSFORMER
+                category: QUALITY FORMS
+
+        - id: section-transformer-details
+          title: Transformer Details
+          widgets:
+            - type: field
+              id: division
+              field:
+                name: division
+                label: Division
+                type: text
+                placeholder: GMD.
+
+            - type: field
+              id: substation
+              field:
+                name: substation
+                label: Substation
+                type: text
+
+            - type: field
+              id: identification-no
+              field:
+                name: identification-no
+                label: Identification No
+                type: text
+
+            - type: field
+              id: date
+              field:
+                name: date
+                label: Date
+                type: date
+
+            - type: field
+              id: bay-location
+              field:
+                name: bay-location
+                label: Bay Location
+                type: text
+
+            - type: field
+              id: reference-file
+              field:
+                name: reference-file
+                label: Reference File
+                type: text
+
+            - type: field
+              id: make
+              field:
+                name: make
+                label: Make
+                type: text
+
+            - type: field
+              id: type
+              field:
+                name: type
+                label: Type
+                type: text
+
+            - type: field
+              id: sl-no
+              field:
+                name: sl-no
+                label: Sl. No.
+                type: text
+
+            - type: field
+              id: year
+              field:
+                name: year
+                label: Year
+                type: text
+
+            - type: checkboxgroup
+              id: schedule-type
+              checkbox_group:
+                options:
+                  - label: Schedule
+                    value: schedule
+                  - label: Emergency
+                    value: emergency
+                  - label: Special
+                    value: special
+                orientation: horizontal
+
+        - id: section-transformer-number
+          title: Transformer Identification
+          widgets:
+            - type: notes
+              id: transformer-note
+              notes:
+                title: TRANSFORMER NUMBER
+                content: Enter transformer identification details
+                style: info
+
+        - id: section-inspection-table
+          title: Inspection Items
+          widgets:
+            - type: table
+              id: inspection-checklist
+              table:
+                row_mode: finite
+                min: 20
+                max: 20
+                allow_add_rows: false
+                allow_delete_rows: false
+                columns:
+                  - name: sl_no
+                    label: Sl. No
+                    type: string
+
+                  - name: item
+                    label: Item
+                    type: string
+
+                  - name: condition
+                    label: Condition
+                    type: string
+
+                  - name: action_taken
+                    label: Action Taken
+                    type: string
+
+                  - name: reference
+                    label: Reference
+                    type: string
+
+        - id: section-signatures
+          title: Approval
+          widgets:
+            - type: signature
+              id: sig-reviewed
+              signature:
+                role: Reviewed By (GMT-1)
+                name_required: true
+                show_designation: false
+                show_date: true
+
+            - type: signature
+              id: sig-approved
+              signature:
+                role: Approved By (DT)
+                name_required: true
+                show_designation: false
+                show_date: true
