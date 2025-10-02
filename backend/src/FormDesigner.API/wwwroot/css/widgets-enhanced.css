@@ -1,0 +1,201 @@
+/* Enhanced Widget Styling */
+/* Custom styles for enterprise form widgets */
+
+/* FormHeader Widget */
+.runtime-form-header {
+    margin-bottom: 30px;
+}
+
+.runtime-form-header h5 {
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+/* Signature Widget */
+.runtime-signature {
+    margin-bottom: 20px;
+}
+
+.runtime-signature h6 {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.runtime-signature .form-label {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.runtime-signature input {
+    border: 1px solid #bdc3c7;
+}
+
+/* Notes Widget */
+.runtime-notes {
+    margin-bottom: 20px;
+}
+
+.runtime-notes .alert {
+    margin-bottom: 0;
+}
+
+.runtime-notes .alert-heading {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* HierarchicalChecklist Widget */
+.runtime-hierarchical-checklist {
+    margin-bottom: 20px;
+}
+
+.runtime-hierarchical-checklist h5 {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.runtime-hierarchical-checklist .form-check {
+    padding: 5px 0;
+}
+
+.runtime-hierarchical-checklist .form-check-label {
+    font-weight: 500;
+}
+
+/* RadioGroup Widget */
+.runtime-radio-group {
+    margin-bottom: 20px;
+}
+
+.runtime-radio-group .form-label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.runtime-radio-group .form-check {
+    padding: 8px 0;
+}
+
+.runtime-radio-group.horizontal .form-check {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+/* CheckboxGroup Widget */
+.runtime-checkbox-group {
+    margin-bottom: 20px;
+}
+
+.runtime-checkbox-group .form-label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.runtime-checkbox-group .form-check {
+    padding: 8px 0;
+}
+
+.runtime-checkbox-group.horizontal .form-check {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+/* TimePicker Widget */
+.runtime-time-picker input[type="time"] {
+    width: auto;
+    min-width: 150px;
+}
+
+/* Designer Widget Palette Enhanced Icons */
+.widget-item[data-type="formheader"] .widget-icon {
+    font-size: 28px;
+}
+
+.widget-item[data-type="signature"] .widget-icon {
+    font-size: 28px;
+}
+
+.widget-item[data-type="notes"] .widget-icon {
+    font-size: 28px;
+}
+
+.widget-item[data-type="hierarchicalchecklist"] .widget-icon {
+    font-size: 28px;
+}
+
+.widget-item[data-type="radiogroup"] .widget-icon {
+    font-size: 28px;
+}
+
+.widget-item[data-type="checkboxgroup"] .widget-icon {
+    font-size: 28px;
+}
+
+/* Preview Modal Styling */
+#previewModal .modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+#preview-content {
+    background: white;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.preview-content .runtime-section {
+    margin-bottom: 20px;
+}
+
+/* Table Column Editor in Inspector */
+#table-columns-list .border {
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+#table-columns-list input,
+#table-columns-list select {
+    font-size: 0.9rem;
+}
+
+/* Options Editor in Inspector */
+#options-list .border {
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+#options-list input {
+    font-size: 0.9rem;
+}
+
+/* Formula Help Text */
+#formula-help {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85rem;
+}
+
+#formula-help.text-success::before {
+    content: '✓ ';
+}
+
+#formula-help.text-danger::before {
+    content: '✗ ';
+}
+
+/* Computed Field Indicator */
+input[data-formula] {
+    background-color: #f0f8ff !important;
+    border-left: 3px solid #3498db;
+}
+
+/* Page Navigation in Preview */
+#preview-page-nav .page-nav-btn {
+    margin-right: 5px;
+    margin-bottom: 10px;
+}

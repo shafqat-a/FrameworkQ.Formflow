@@ -1,0 +1,329 @@
+/* Enterprise Forms Stylesheet */
+/* Styles matching Power Grid Company of Bangladesh forms */
+
+/* Form Header Styles */
+.runtime-form-header table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.runtime-form-header table td {
+    border: 1px solid #000;
+    padding: 8px;
+    vertical-align: middle;
+}
+
+.runtime-form-header table .bg-light {
+    background-color: #f5f5f5;
+}
+
+.runtime-form-header table strong {
+    font-weight: 600;
+}
+
+.runtime-form-header table .text-center {
+    text-align: center;
+}
+
+/* Table Borders - Enterprise Style */
+.runtime-table table {
+    border-collapse: collapse;
+    width: 100%;
+    border: 2px solid #000;
+}
+
+.runtime-table table th,
+.runtime-table table td {
+    border: 1px solid #000;
+    padding: 8px;
+    vertical-align: middle;
+}
+
+.runtime-table table thead th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid #000;
+}
+
+.runtime-table table tbody td {
+    border: 1px solid #000;
+}
+
+/* Multi-row Headers */
+.runtime-table table thead tr.header-row-1 th {
+    background-color: #e8e8e8;
+    font-weight: 700;
+}
+
+.runtime-table table thead tr.header-row-2 th {
+    background-color: #f0f0f0;
+    font-weight: 600;
+}
+
+/* Merged Cells */
+.runtime-table table .merged-cell {
+    background-color: #f9f9f9;
+}
+
+/* Hierarchical Checklist Styles */
+.runtime-hierarchical-checklist .form-check {
+    margin-bottom: 8px;
+    line-height: 1.8;
+}
+
+.runtime-hierarchical-checklist .form-check-label {
+    font-weight: 500;
+}
+
+.runtime-hierarchical-checklist .form-check.level-0 {
+    font-weight: 600;
+    margin-top: 15px;
+}
+
+.runtime-hierarchical-checklist .form-check.level-1 {
+    margin-left: 20px;
+}
+
+.runtime-hierarchical-checklist .form-check.level-2 {
+    margin-left: 40px;
+}
+
+/* Signature Block */
+.runtime-signature {
+    page-break-inside: avoid;
+}
+
+.runtime-signature .border {
+    border: 1px solid #ddd !important;
+}
+
+.runtime-signature h6 {
+    font-weight: 600;
+    color: #2c3e50;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+}
+
+.runtime-signature input[type="text"],
+.runtime-signature input[type="date"] {
+    border: none;
+    border-bottom: 1px solid #000;
+    border-radius: 0;
+    padding: 4px 0;
+}
+
+.runtime-signature input[type="text"]:focus,
+.runtime-signature input[type="date"]:focus {
+    border-bottom: 2px solid #3498db;
+    box-shadow: none;
+}
+
+/* Notes Styles */
+.runtime-notes .alert {
+    border-left: 4px solid;
+}
+
+.runtime-notes .alert-primary {
+    border-left-color: #3498db;
+}
+
+.runtime-notes .alert-warning {
+    border-left-color: #f39c12;
+}
+
+.runtime-notes .alert-info {
+    border-left-color: #27ae60;
+}
+
+/* Section Numbering */
+.runtime-section-title::before {
+    content: attr(data-number);
+    margin-right: 10px;
+    font-weight: 700;
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white;
+    }
+
+    .toolbar,
+    .btn,
+    button {
+        display: none !important;
+    }
+
+    .runtime-form-header table,
+    .runtime-table table {
+        border: 2px solid #000;
+    }
+
+    .runtime-form-header table td,
+    .runtime-table table th,
+    .runtime-table table td {
+        border: 1px solid #000;
+    }
+
+    .page-navigation {
+        display: none;
+    }
+
+    .form-actions {
+        display: none;
+    }
+
+    .runtime-section {
+        page-break-inside: avoid;
+    }
+
+    .runtime-signature {
+        page-break-inside: avoid;
+    }
+
+    /* Show all pages when printing */
+    .page-container {
+        display: block !important;
+        page-break-after: always;
+    }
+
+    .page-container:last-child {
+        page-break-after: auto;
+    }
+}
+
+/* Landscape Orientation Support */
+@media print and (orientation: landscape) {
+    @page {
+        size: landscape;
+    }
+}
+
+/* Checkbox/Radio Group Styling */
+.runtime-radio-group .form-check,
+.runtime-checkbox-group .form-check {
+    padding: 8px 12px;
+    margin-bottom: 8px;
+}
+
+.runtime-radio-group .form-check-input,
+.runtime-checkbox-group .form-check-input {
+    margin-top: 0.4rem;
+}
+
+/* Grid Layout for Checkbox Groups */
+.runtime-checkbox-group .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.runtime-checkbox-group .row .col {
+    padding-left: 0;
+    padding-right: 15px;
+}
+
+/* Readonly Calculated Fields */
+input[readonly].bg-light,
+textarea[readonly].bg-light {
+    background-color: #f0f0f0 !important;
+    cursor: not-allowed;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Required Field Indicator */
+.required label::after {
+    content: ' *';
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+/* Page Breaks for Multi-page Forms */
+.page-break {
+    page-break-after: always;
+}
+
+/* Enterprise Table Styles - Matching Power Grid Forms */
+.enterprise-table {
+    border: 2px solid #000;
+}
+
+.enterprise-table th {
+    background-color: #e8e8e8;
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid #000;
+    padding: 10px;
+}
+
+.enterprise-table td {
+    border: 1px solid #000;
+    padding: 8px;
+}
+
+.enterprise-table input {
+    border: none;
+    width: 100%;
+    padding: 4px;
+}
+
+.enterprise-table input:focus {
+    outline: 2px solid #3498db;
+}
+
+/* Time-based Column Headers (for Log Sheets) */
+.time-column-header {
+    min-width: 40px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Transformer Section Styling */
+.transformer-section {
+    border: 1px solid #000;
+    margin-bottom: 20px;
+}
+
+.transformer-section .section-header {
+    background-color: #e8e8e8;
+    padding: 10px;
+    border-bottom: 1px solid #000;
+    font-weight: 600;
+}
+
+/* Footer Signatures */
+.signature-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #000;
+}
+
+.signature-footer .signature-block {
+    flex: 1;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.signature-footer .signature-line {
+    border-top: 1px solid #000;
+    margin-top: 60px;
+    padding-top: 5px;
+}
+
+/* Copy To Section */
+.copy-to-section {
+    margin-top: 20px;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    font-size: 0.9rem;
+}
+
+.copy-to-section strong {
+    display: block;
+    margin-bottom: 5px;
+}
