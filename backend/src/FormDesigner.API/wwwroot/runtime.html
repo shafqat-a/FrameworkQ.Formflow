@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Runtime</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/runtime.css">
+</head>
+<body>
+    <!-- Toolbar -->
+    <div id="toolbar" class="toolbar">
+        <div class="toolbar-left">
+            <a href="/index.html" class="btn btn-secondary">Designer Mode</a>
+            <button id="btn-select-form" class="btn btn-primary">Select Form</button>
+        </div>
+
+        <div class="toolbar-center">
+            <h4 id="form-title-display" class="mb-0 text-white">Form Runtime</h4>
+        </div>
+
+        <div class="toolbar-right">
+            <button id="btn-save-progress" class="btn btn-warning" disabled>Save Progress</button>
+            <button id="btn-submit" class="btn btn-success" disabled>Submit</button>
+            <button id="btn-cancel" class="btn btn-danger" disabled>Cancel</button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div id="main-container" class="main-container">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="welcome-screen">
+            <div class="welcome-content">
+                <h1>Form Runtime</h1>
+                <p class="lead">Select a committed form to begin data entry</p>
+                <button id="btn-select-form-welcome" class="btn btn-primary btn-lg">Select Form</button>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <div id="form-container" class="form-container" style="display: none;">
+            <div class="container-fluid">
+                <!-- Page Navigation -->
+                <div id="page-navigation" class="page-navigation">
+                    <!-- Page buttons will be dynamically generated -->
+                </div>
+
+                <!-- Form Content -->
+                <div id="form-content" class="form-content">
+                    <!-- Sections and widgets will be dynamically generated -->
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button id="btn-prev-page" class="btn btn-secondary" disabled>Previous Page</button>
+                    <button id="btn-next-page" class="btn btn-secondary" disabled>Next Page</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Select Form Modal -->
+    <div class="modal fade" id="selectFormModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Select Form</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="committed-forms-list" class="list-group">
+                        <div class="text-center text-muted">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading committed forms...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save Progress Confirmation Modal -->
+    <div class="modal fade" id="saveProgressModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Save Progress</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Your progress has been saved. You can resume this form later.</p>
+                    <p class="text-muted small">Instance ID: <span id="instance-id-display"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Confirmation Modal -->
+    <div class="modal fade" id="submitConfirmModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Submission</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to submit this form?</p>
+                    <p class="text-warning"><strong>This action cannot be undone.</strong></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="btn-confirm-submit" class="btn btn-success">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Success Modal -->
+    <div class="modal fade" id="submitSuccessModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Submission Successful</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <div class="success-icon mb-3">✓</div>
+                        <p class="lead">Form submitted successfully!</p>
+                        <p class="text-muted small">Instance ID: <span id="submit-instance-id-display"></span></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btn-new-instance">Start New Instance</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery 3.7 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap 5 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Runtime JavaScript -->
+    <script src="/js/runtime.js"></script>
+</body>
+</html>
