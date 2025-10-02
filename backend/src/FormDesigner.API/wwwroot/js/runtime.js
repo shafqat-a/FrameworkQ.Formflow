@@ -40,10 +40,11 @@ const FormRuntime = {
         $('#btn-prev-page').on('click', () => this.previousPage());
         $('#btn-next-page').on('click', () => this.nextPage());
 
-        // Track form data changes
-        $(document).on('input change', '.runtime-field input, .runtime-field select, .runtime-field textarea', () => {
+        // Track form data changes and trigger calculations
+        $(document).on('input change', '.runtime-field input, .runtime-field select, .runtime-field textarea, input[type="number"], input[type="text"]', () => {
             this.state.isDirty = true;
             this.collectFormData();
+            this.recalculateFormulas();
         });
 
         // Warn before leaving if unsaved changes
@@ -253,6 +254,18 @@ const FormRuntime = {
                 return this.renderChecklistWidget(widget);
             case 'group':
                 return this.renderGroupWidget(widget);
+            case 'formheader':
+                return this.renderFormHeaderWidget(widget);
+            case 'signature':
+                return this.renderSignatureWidget(widget);
+            case 'notes':
+                return this.renderNotesWidget(widget);
+            case 'hierarchicalchecklist':
+                return this.renderHierarchicalChecklistWidget(widget);
+            case 'radiogroup':
+                return this.renderRadioGroupWidget(widget);
+            case 'checkboxgroup':
+                return this.renderCheckboxGroupWidget(widget);
             default:
                 return `<div class="runtime-widget">Unknown widget type: ${widget.type}</div>`;
         }
@@ -358,6 +371,176 @@ const FormRuntime = {
         `;
     },
 
+    // Render FormHeader widget
+    renderFormHeaderWidget(widget) {
+        const spec = widget.spec || {};
+        return `
+            <div class="runtime-widget runtime-form-header mb-4" data-widget-id="${widget.id}">
+                <table class="table table-bordered table-sm">
+                    <tr>
+                        <td class="bg-light"><strong>Quality Management System</strong></td>
+                        <td colspan="3" class="text-center"><strong>${spec.organization || 'ORGANIZATION'}</strong></td>
+                        <td class="bg-light"><strong>${spec.category || 'QUALITY FORMS'}</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Document No:</strong></td>
+                        <td><input type="text" class="form-control form-control-sm" id="${widget.id}_doc_no" name="${widget.id}_doc_no" value="${spec.document_no || ''}"></td>
+                        <td><strong>Revision No.:</strong></td>
+                        <td><input type="text" class="form-control form-control-sm" id="${widget.id}_rev_no" name="${widget.id}_rev_no" value="${spec.revision_no || ''}"></td>
+                        <td rowspan="2" class="text-center align-middle"><strong>Page:</strong><br>${spec.page_number || '1 of 1'}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="text-center"><strong>TITLE: ${spec.form_title || this.state.currentForm?.title || 'FORM TITLE'}</strong></td>
+                        <td><strong>Effective Date:</strong></td>
+                        <td><input type="date" class="form-control form-control-sm" id="${widget.id}_eff_date" name="${widget.id}_eff_date" value="${spec.effective_date || ''}"></td>
+                    </tr>
+                </table>
+            </div>
+        `;
+    },
+
+    // Render Signature widget
+    renderSignatureWidget(widget) {
+        const spec = widget.spec || {};
+        return `
+            <div class="runtime-widget runtime-signature mb-3" data-widget-id="${widget.id}">
+                <div class="border p-3 bg-light">
+                    <h6 class="mb-3">${spec.role || 'Signature'}</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label">${spec.name_label || 'Name'}${spec.name_required ? ' *' : ''}</label>
+                            <input type="text" class="form-control" id="${widget.id}_name" name="${widget.id}_name" ${spec.name_required ? 'required' : ''}>
+                        </div>
+                        ${spec.show_designation ? `
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label">${spec.designation_label || 'Designation'}</label>
+                            <input type="text" class="form-control" id="${widget.id}_designation" name="${widget.id}_designation">
+                        </div>
+                        ` : ''}
+                    </div>
+                    ${spec.show_date ? `
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <label class="form-label">${spec.date_label || 'Date'}</label>
+                            <input type="date" class="form-control" id="${widget.id}_date" name="${widget.id}_date" ${spec.auto_date ? `value="${new Date().toISOString().split('T')[0]}"` : ''}>
+                        </div>
+                    </div>
+                    ` : ''}
+                    ${spec.require_signature_image ? `
+                    <div class="mt-3">
+                        <label class="form-label">Signature</label>
+                        <div style="border: 2px solid #bdc3c7; background: white; width: ${spec.signature_width || 400}px; height: ${spec.signature_height || 100}px; display: flex; align-items: center; justify-content: center; color: #95a5a6;">
+                            <em>Click to sign</em>
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    },
+
+    // Render Notes widget
+    renderNotesWidget(widget) {
+        const spec = widget.spec || {};
+        const styleClass = spec.style === 'warning' ? 'alert-warning' : spec.style === 'note' ? 'alert-info' : 'alert-primary';
+        return `
+            <div class="runtime-widget runtime-notes mb-3" data-widget-id="${widget.id}">
+                <div class="alert ${styleClass}">
+                    ${spec.title ? `<h6 class="alert-heading">${spec.title}</h6>` : ''}
+                    <div>${spec.content || ''}</div>
+                </div>
+            </div>
+        `;
+    },
+
+    // Render HierarchicalChecklist widget
+    renderHierarchicalChecklistWidget(widget) {
+        const spec = widget.spec || {};
+        const items = spec.items || [];
+
+        const renderItems = (items, level = 0) => {
+            return items.map((item, index) => {
+                const indent = level * (spec.indent_size || 20);
+                const number = item.number || `${level + 1}.${index}`;
+                const numberDisplay = spec.show_numbering ? `${number} ` : '';
+
+                let itemHtml = `
+                    <div class="form-check" style="margin-left: ${indent}px;">
+                        <input class="form-check-input" type="checkbox" id="${widget.id}_${item.key}" name="${widget.id}_${item.key}" ${item.required || spec.all_required ? 'required' : ''}>
+                        <label class="form-check-label" for="${widget.id}_${item.key}">
+                            ${numberDisplay}${item.label}
+                        </label>
+                    </div>
+                `;
+
+                if (item.children && item.children.length > 0) {
+                    itemHtml += renderItems(item.children, level + 1);
+                }
+
+                return itemHtml;
+            }).join('');
+        };
+
+        return `
+            <div class="runtime-widget runtime-hierarchical-checklist mb-3" data-widget-id="${widget.id}">
+                <h5 class="mb-3">${widget.label}</h5>
+                ${renderItems(items)}
+            </div>
+        `;
+    },
+
+    // Render RadioGroup widget
+    renderRadioGroupWidget(widget) {
+        const spec = widget.spec || {};
+        const options = spec.options || [];
+        const orientation = spec.orientation === 'horizontal' ? 'd-flex gap-3' : '';
+        const requiredAttr = spec.required ? 'required' : '';
+
+        const optionsHtml = options.map((opt, index) => `
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="${widget.id}" id="${widget.id}_${index}" value="${opt.value || opt}" ${requiredAttr}>
+                <label class="form-check-label" for="${widget.id}_${index}">
+                    ${opt.label || opt}
+                </label>
+            </div>
+        `).join('');
+
+        return `
+            <div class="runtime-widget runtime-radio-group mb-3" data-widget-id="${widget.id}">
+                <label class="form-label"><strong>${widget.label}</strong>${spec.required ? ' <span class="text-danger">*</span>' : ''}</label>
+                <div class="${orientation}">
+                    ${optionsHtml}
+                </div>
+            </div>
+        `;
+    },
+
+    // Render CheckboxGroup widget
+    renderCheckboxGroupWidget(widget) {
+        const spec = widget.spec || {};
+        const options = spec.options || [];
+        const orientation = spec.orientation === 'horizontal' ? 'd-flex gap-3' : spec.orientation === 'grid' ? `row row-cols-${spec.grid_columns || 2}` : '';
+
+        const optionsHtml = options.map((opt, index) => `
+            <div class="form-check ${spec.orientation === 'grid' ? 'col' : ''}">
+                <input class="form-check-input" type="checkbox" name="${widget.id}_${index}" id="${widget.id}_${index}" value="${opt.value || opt}">
+                <label class="form-check-label" for="${widget.id}_${index}">
+                    ${opt.label || opt}
+                </label>
+            </div>
+        `).join('');
+
+        return `
+            <div class="runtime-widget runtime-checkbox-group mb-3" data-widget-id="${widget.id}">
+                <label class="form-label"><strong>${widget.label}</strong></label>
+                ${spec.min_selections || spec.max_selections ? `<small class="text-muted d-block mb-2">Select ${spec.min_selections ? `at least ${spec.min_selections}` : ''}${spec.min_selections && spec.max_selections ? ' and ' : ''}${spec.max_selections ? `at most ${spec.max_selections}` : ''}</small>` : ''}
+                <div class="${orientation}">
+                    ${optionsHtml}
+                </div>
+            </div>
+        `;
+    },
+
     // Populate form with existing data
     populateFormData() {
         Object.keys(this.state.formData).forEach(key => {
@@ -384,12 +567,103 @@ const FormRuntime = {
 
             if ($el.attr('type') === 'checkbox') {
                 this.state.formData[name] = $el.is(':checked');
+            } else if ($el.attr('type') === 'radio') {
+                if ($el.is(':checked')) {
+                    this.state.formData[name] = $el.val();
+                }
             } else {
                 this.state.formData[name] = $el.val();
             }
         });
 
         return this.state.formData;
+    },
+
+    // Recalculate all formulas in the form
+    recalculateFormulas() {
+        if (!this.state.currentForm) return;
+
+        // Find all fields with formulas
+        this.state.currentForm.pages.forEach(page => {
+            page.sections.forEach(section => {
+                section.widgets.forEach(widget => {
+                    if (widget.type === 'field' && widget.spec?.formula) {
+                        this.calculateField(widget);
+                    } else if (widget.type === 'table') {
+                        this.calculateTableAggregates(widget);
+                    }
+                });
+            });
+        });
+    },
+
+    // Calculate a single field with formula
+    calculateField(widget) {
+        const formula = widget.spec?.formula;
+        if (!formula) return;
+
+        const result = FormulaEvaluator.evaluate(formula, this.state.formData);
+
+        if (result.error) {
+            console.warn(`Formula error in ${widget.id}: ${result.error}`);
+            return;
+        }
+
+        // Update the field value
+        const $field = $(`#${widget.id}`);
+        if ($field.length) {
+            $field.val(result.value);
+            // Mark as readonly
+            $field.attr('readonly', true);
+            $field.addClass('bg-light');
+        }
+
+        // Update form data
+        this.state.formData[widget.id] = result.value;
+    },
+
+    // Calculate table aggregates
+    calculateTableAggregates(widget) {
+        const aggregates = widget.spec?.aggregates;
+        if (!aggregates || aggregates.length === 0) return;
+
+        // Get table rows data
+        const tableId = widget.id;
+        const rows = [];
+
+        $(`[data-table-id="${tableId}"] tr`).each((i, row) => {
+            const rowData = {};
+            $(row).find('input, select').each((j, input) => {
+                const name = $(input).attr('name');
+                if (name) {
+                    rowData[name] = $(input).val();
+                }
+            });
+            if (Object.keys(rowData).length > 0) {
+                rows.push(rowData);
+            }
+        });
+
+        // Calculate each aggregate
+        aggregates.forEach(agg => {
+            const column = agg.column;
+            const type = agg.type || 'SUM';
+            const targetField = agg.target_field;
+
+            if (targetField) {
+                const result = FormulaEvaluator.evaluateAggregate(rows, column, type);
+
+                // Update target field
+                const $target = $(`#${targetField}`);
+                if ($target.length) {
+                    $target.val(result);
+                    $target.attr('readonly', true);
+                    $target.addClass('bg-light');
+                }
+
+                this.state.formData[targetField] = result;
+            }
+        });
     },
 
     // Navigation
@@ -445,20 +719,12 @@ const FormRuntime = {
         try {
             const data = this.collectFormData();
 
-            // Validate required fields
-            let isValid = true;
-            $('.runtime-field.required input, .runtime-field.required select, .runtime-field.required textarea').each((i, el) => {
-                if (!$(el).val()) {
-                    $(el).addClass('is-invalid');
-                    isValid = false;
-                } else {
-                    $(el).removeClass('is-invalid');
-                }
-            });
+            // Validate all widgets
+            const validationErrors = this.validateForm();
 
-            if (!isValid) {
+            if (validationErrors.length > 0) {
                 bootstrap.Modal.getInstance($('#submitConfirmModal')[0]).hide();
-                this.showMessage('Please fill in all required fields', 'error');
+                this.showMessage(validationErrors[0], 'error');
                 return;
             }
 
@@ -513,6 +779,87 @@ const FormRuntime = {
         $('#form-container').hide();
         $('#welcome-screen').show();
         $('#form-title-display').text('Form Runtime');
+    },
+
+    // Validate entire form
+    validateForm() {
+        const errors = [];
+
+        // Clear all previous validation states
+        $('.is-invalid').removeClass('is-invalid');
+
+        // Validate each widget type
+        this.state.currentForm.pages.forEach(page => {
+            page.sections.forEach(section => {
+                section.widgets.forEach(widget => {
+                    const widgetErrors = this.validateWidget(widget);
+                    errors.push(...widgetErrors);
+                });
+            });
+        });
+
+        return errors;
+    },
+
+    // Validate a single widget
+    validateWidget(widget) {
+        const errors = [];
+
+        switch (widget.type) {
+            case 'field':
+                if (widget.required) {
+                    const value = this.state.formData[widget.id];
+                    if (!value || value === '') {
+                        $(`#${widget.id}`).addClass('is-invalid');
+                        errors.push(`${widget.label} is required`);
+                    }
+                }
+                break;
+
+            case 'radiogroup':
+                if (widget.spec?.required) {
+                    const selected = $(`input[name="${widget.id}"]:checked`).length > 0;
+                    if (!selected) {
+                        errors.push(`${widget.label} requires a selection`);
+                    }
+                }
+                break;
+
+            case 'checkboxgroup':
+                const checked = $(`input[name^="${widget.id}_"]:checked`).length;
+                const spec = widget.spec || {};
+
+                if (spec.min_selections && checked < spec.min_selections) {
+                    errors.push(`${widget.label} requires at least ${spec.min_selections} selection(s)`);
+                }
+
+                if (spec.max_selections && checked > spec.max_selections) {
+                    errors.push(`${widget.label} allows at most ${spec.max_selections} selection(s)`);
+                }
+                break;
+
+            case 'signature':
+                if (widget.spec?.name_required) {
+                    const name = this.state.formData[`${widget.id}_name`];
+                    if (!name || name === '') {
+                        $(`#${widget.id}_name`).addClass('is-invalid');
+                        errors.push(`${widget.label} - Name is required`);
+                    }
+                }
+                break;
+
+            case 'hierarchicalchecklist':
+                if (widget.spec?.all_required) {
+                    const checkboxes = $(`input[id^="${widget.id}_"]`);
+                    const unchecked = checkboxes.filter((i, el) => !$(el).is(':checked'));
+                    if (unchecked.length > 0) {
+                        errors.push(`${widget.label} - All items must be checked`);
+                    }
+                }
+                break;
+        }
+
+        return errors;
     },
 
     // Show status message

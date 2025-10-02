@@ -1,0 +1,214 @@
+form:
+  id: qf-gmd-06
+  title: Consolidated Statement of Sub-Station & Transmission Line Performance
+  version: "00"
+
+  pages:
+    - id: page-1
+      title: Sub-Station & Transmission Line Performance
+      sections:
+        - id: section-header
+          title: Form Header
+          widgets:
+            - type: formheader
+              id: header-widget
+              title: Document Header
+              formheader:
+                document_no: QF-GMD-06
+                revision_no: "00"
+                effective_date: 15/02/07
+                page_number: 1 of 1
+                organization: POWER GRID COMPANY OF BANGLADESH LTD.
+                form_title: Consolidated statement of Sub-Station & Transmission Line Performance (Sub-station Report)
+                category: QUALITY FORMS
+
+        - id: section-basic-info
+          title: Basic Information
+          widgets:
+            - type: field
+              id: substation
+              title: Substation
+              field:
+                type: text
+                required: true
+
+            - type: field
+              id: substation-id-no
+              title: Substation Identification No
+              field:
+                type: text
+
+            - type: field
+              id: reference-file
+              title: Reference File
+              field:
+                type: text
+
+            - type: field
+              id: month
+              title: Month
+              field:
+                type: text
+                required: true
+
+        - id: section-substation-performance
+          title: (A) Sub-Station Performance
+          widgets:
+            - type: table
+              id: substation-perf-table
+              title: Sub-Station Performance Data
+              table:
+                row_mode: finite
+                min: 1
+                max: 20
+                allow_add_rows: true
+                allow_delete_rows: true
+                columns:
+                  - name: sl_no
+                    label: Sl. No.
+                    type: integer
+                    required: true
+
+                  - name: total_capacity
+                    label: Total Sub-station capacity (MVA)
+                    type: decimal
+
+                  - name: forced_interruption
+                    label: Forced
+                    type: integer
+
+                  - name: scheduled_interruption
+                    label: Scheduled
+                    type: integer
+
+                  - name: total_interruption
+                    label: Total
+                    type: integer
+                    formula: forced_interruption + scheduled_interruption
+
+                  - name: upto_30min
+                    label: Upto 30 minutes
+                    type: integer
+
+                  - name: upto_01hr
+                    label: Upto 01 hour
+                    type: integer
+
+                  - name: more_than_01hr
+                    label: More than 01 hour
+                    type: integer
+
+                  - name: energy_interruption
+                    label: Amount of Energy Interruption (MkWh)
+                    type: decimal
+
+                  - name: remarks
+                    label: Remarks
+                    type: string
+
+        - id: section-line-performance
+          title: (B) Line Performance
+          widgets:
+            - type: table
+              id: line-perf-table
+              title: Transmission Line Performance Data
+              table:
+                row_mode: finite
+                min: 1
+                max: 20
+                allow_add_rows: true
+                allow_delete_rows: true
+                columns:
+                  - name: sl_no
+                    label: Sl. No.
+                    type: integer
+                    required: true
+
+                  - name: line_length
+                    label: Total length of Transmission line (Ckt. Km.)
+                    type: decimal
+
+                  - name: sections
+                    label: No. of Section of Transmission line
+                    type: integer
+
+                  - name: forced_int
+                    label: Forced
+                    type: integer
+
+                  - name: scheduled_int
+                    label: Scheduled
+                    type: integer
+
+                  - name: total_int
+                    label: Total
+                    type: integer
+                    formula: forced_int + scheduled_int
+
+                  - name: upto_30_min
+                    label: Upto 30 minutes
+                    type: integer
+
+                  - name: upto_01_hour
+                    label: Upto 01 hour
+                    type: integer
+
+                  - name: more_than_01_hour
+                    label: More than 01 hour
+                    type: integer
+
+                  - name: energy_int
+                    label: Amount of Energy Interruption (MkWh)
+                    type: decimal
+
+                  - name: line_remarks
+                    label: Remarks
+                    type: string
+
+        - id: section-availability
+          title: Availability Metrics
+          widgets:
+            - type: group
+              id: availability-group
+              title: Availability
+              fields:
+                - name: substation-availability
+                  label: (A) Availability of the Sub-Station
+                  type: text
+
+                - name: line-availability
+                  label: (B) Availability of Transmission Line
+                  type: text
+
+        - id: section-approval
+          title: Approval & Distribution
+          widgets:
+            - type: notes
+              id: copy-to
+              title: Distribution
+              notes:
+                style: info
+                title: Copy to
+                content: |
+                  1. Manager, GMD ............. , PGCB.
+                  2. Office copy.
+
+            - type: signature
+              id: sig-dy-manager
+              title: Dy. Manager / Asst. Manager
+              signature:
+                role: Dy. Manager / Asst. Manager
+                designation_label: Sub-station
+                show_designation: true
+                show_date: true
+
+  metadata:
+    organization: Power Grid Company of Bangladesh
+    document_number: QF-GMD-06
+    effective_date: 2007-02-15
+    revision: "00"
+    tags:
+      - performance-report
+      - substation
+      - transmission-line
+      - quality-management

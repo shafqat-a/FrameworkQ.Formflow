@@ -1,0 +1,119 @@
+form:
+  id: qf-gmd-19-complete
+  title: Sub-Station Daily Inspection Check Sheet
+  version: "01"
+  pages:
+    - id: page-1
+      title: Daily Inspection - Shift B
+      sections:
+        - id: section-header
+          title: Form Header
+          widgets:
+            - type: formheader
+              id: doc-header
+              form_header:
+                document_no: QF-GMD-19
+                revision_no: "01"
+                effective_date: 12/12/12
+                page_number: 2 of 2
+                organization: POWER GRID COMPANY OF BANGLADESH LTD.
+                form_title: SUB-STATION DAILY INSPECTION CHECK SHEET
+                category: QUALITY FORMS
+
+        - id: section-shift-info
+          title: Shift Information
+          widgets:
+            - type: notes
+              id: shift-title
+              notes:
+                style: info
+                title: Shift – B (From 14:00 hr. to 22:00 hr.)
+                content: দৈনিক উপকেন্দ্রে স্থানিত যন্ত্রপাতির প্রাতঃকালিক চেক লিস্ট
+
+        - id: section-inspection-table
+          title: Inspection Items
+          widgets:
+            - type: table
+              id: daily-inspection
+              table:
+                row_mode: finite
+                min: 15
+                max: 15
+                allow_add_rows: false
+                allow_delete_rows: false
+                columns:
+                  - name: item_no
+                    label: Item No
+                    type: string
+
+                  - name: item_description
+                    label: Item Description
+                    type: string
+
+                  - name: observation
+                    label: Observation
+                    type: string
+
+                  - name: day_1
+                    label: Day 1
+                    type: string
+
+                  - name: day_2
+                    label: Day 2
+                    type: string
+
+                  - name: day_3
+                    label: Day 3
+                    type: string
+
+                  - name: day_4
+                    label: Day 4
+                    type: string
+
+                  - name: day_5
+                    label: Day 5
+                    type: string
+
+                  - name: day_6
+                    label: Day 6
+                    type: string
+
+                  - name: day_7
+                    label: Day 7
+                    type: string
+
+        - id: section-signatures
+          title: Shift Signatures
+          widgets:
+            - type: signature
+              id: sig-shift-b
+              signature:
+                role: Signature of Shift-in-Charge (B shift)
+                name_required: false
+                show_designation: false
+                show_date: false
+
+            - type: signature
+              id: sig-shift-c
+              signature:
+                role: Signature of Shift-in-Charge (C shift)
+                name_required: false
+                show_designation: false
+                show_date: false
+
+            - type: signature
+              id: sig-shift-a
+              signature:
+                role: Signature of Shift-in-Charge (A shift)
+                name_required: false
+                show_designation: false
+                show_date: false
+
+            - type: signature
+              id: sig-station
+              signature:
+                role: Signature of Station in Charge
+                designation_label: Assistant Manager / Deputy Manager
+                name_required: false
+                show_designation: true
+                show_date: false

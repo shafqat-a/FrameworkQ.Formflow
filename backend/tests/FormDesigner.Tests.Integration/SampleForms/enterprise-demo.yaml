@@ -1,0 +1,154 @@
+form:
+  id: enterprise-demo
+  title: Enterprise Form Demonstration
+  version: "1.0"
+  pages:
+    - id: page-1
+      title: Enterprise Demo Form
+      sections:
+        - id: section-header
+          title: Document Header
+          widgets:
+            - type: formheader
+              id: doc-header
+              form_header:
+                document_no: QF-DEMO-001
+                revision_no: "01"
+                effective_date: 2025-10-02
+                page_number: 1 of 1
+                organization: POWER GRID COMPANY OF BANGLADESH LTD.
+                form_title: ENTERPRISE FORM DEMONSTRATION
+                category: QUALITY FORMS
+                show_on_all_pages: true
+
+        - id: section-fields
+          title: Basic Information
+          widgets:
+            - type: field
+              id: employee-name
+              field:
+                name: employee-name
+                label: Employee Name
+                type: text
+                required: true
+                placeholder: Enter full name
+
+            - type: field
+              id: employee-id
+              field:
+                name: employee-id
+                label: Employee ID
+                type: text
+                required: true
+
+            - type: field
+              id: inspection-date
+              field:
+                name: inspection-date
+                label: Inspection Date
+                type: date
+                required: true
+
+            - type: field
+              id: inspection-time
+              field:
+                name: inspection-time
+                label: Inspection Time
+                type: time
+
+        - id: section-status
+          title: Equipment Status
+          widgets:
+            - type: radiogroup
+              id: equipment-status
+              radio_group:
+                options:
+                  - label: Good
+                    value: good
+                  - label: Acceptable
+                    value: acceptable
+                  - label: Poor
+                    value: poor
+                orientation: horizontal
+                required: true
+
+            - type: checkboxgroup
+              id: issues-found
+              checkbox_group:
+                options:
+                  - label: Oil Leakage
+                    value: oil_leakage
+                  - label: Temperature High
+                    value: temp_high
+                  - label: Noise Detected
+                    value: noise
+                  - label: Vibration
+                    value: vibration
+                orientation: vertical
+                min_selections: 0
+                max_selections: 4
+
+        - id: section-notes
+          title: Instructions
+          widgets:
+            - type: notes
+              id: important-note
+              notes:
+                title: Important Safety Notice
+                content: All personnel must wear proper PPE during inspection
+                style: warning
+
+        - id: section-table
+          title: Readings Data
+          widgets:
+            - type: table
+              id: hourly-readings
+              table:
+                row_mode: finite
+                min: 1
+                max: 10
+                allow_add_rows: true
+                allow_delete_rows: true
+                columns:
+                  - name: time
+                    label: Time
+                    type: string
+                    required: true
+
+                  - name: voltage
+                    label: Voltage (kV)
+                    type: decimal
+
+                  - name: current
+                    label: Current (A)
+                    type: decimal
+
+                  - name: power
+                    label: Power (MW)
+                    type: decimal
+
+        - id: section-approval
+          title: Approval Signatures
+          widgets:
+            - type: signature
+              id: sig-inspector
+              signature:
+                role: Inspector
+                name_label: Name
+                name_required: true
+                designation_label: Designation
+                show_designation: true
+                date_label: Date
+                show_date: true
+                auto_date: false
+
+            - type: signature
+              id: sig-supervisor
+              signature:
+                role: Supervisor
+                name_label: Name
+                name_required: true
+                designation_label: Designation
+                show_designation: true
+                date_label: Date
+                show_date: true

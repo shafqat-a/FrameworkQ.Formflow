@@ -1,0 +1,95 @@
+form:
+  id: surveillance-complete
+  title: Surveillance Visit of Sub-Station
+  version: "01"
+  pages:
+    - id: page-1
+      title: Surveillance Visit of Sub-Station
+      sections:
+        - id: header-section
+          title: Document Header
+          widgets:
+            - type: formheader
+              id: doc-header
+              form_header:
+                document_no: QF-GMD-17
+                revision_no: "01"
+                effective_date: 03/03/15
+                page_number: 1 of 1
+                organization: POWER GRID COMPANY OF BANGLADESH LTD.
+                form_title: SURVEILLANCE VISIT OF SUB-STATION
+                category: QUALITY FORMS
+
+        - id: basic-info-section
+          title: Basic Information
+          widgets:
+            - type: field
+              id: office-substation
+              field:
+                name: office-substation
+                label: Name of the Office / Sub-station
+                type: text
+                required: false
+
+            - type: field
+              id: name-designation
+              field:
+                name: name-designation
+                label: Name & Designation
+                type: text
+                required: false
+
+            - type: field
+              id: inspection-datetime
+              field:
+                name: inspection-datetime
+                label: Date & time inspection
+                type: datetime
+                required: false
+
+        - id: inspection-section
+          title: Inspection Checklist
+          widgets:
+            - type: table
+              id: inspection-items
+              table:
+                row_mode: finite
+                min: 30
+                max: 30
+                allow_add_rows: false
+                allow_delete_rows: false
+                columns:
+                  - name: sl_no
+                    label: Sl. No.
+                    type: string
+
+                  - name: item
+                    label: Item
+                    type: string
+
+                  - name: observation
+                    label: Observation
+                    type: string
+
+                  - name: remarks
+                    label: Remarks
+                    type: string
+
+        - id: signature-section
+          title: Approval Signatures
+          widgets:
+            - type: signature
+              id: sig-reviewed
+              signature:
+                role: Reviewed by (GMT-1)
+                name_required: true
+                show_designation: false
+                show_date: true
+
+            - type: signature
+              id: sig-approved
+              signature:
+                role: Approved by (DT)
+                name_required: true
+                show_designation: false
+                show_date: true

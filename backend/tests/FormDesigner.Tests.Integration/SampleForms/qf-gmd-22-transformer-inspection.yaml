@@ -1,0 +1,292 @@
+form:
+  id: qf-gmd-22
+  title: Inspection & Maintenance of Power Transformer
+  version: "1"
+
+  pages:
+    - id: page-1
+      title: Transformer Inspection & Maintenance
+      sections:
+        - id: section-header
+          title: Form Header
+          widgets:
+            - type: formheader
+              id: header-widget
+              title: Document Header
+              formheader:
+                document_no: QF-GMD-22
+                revision_no: "1"
+                effective_date: 28/01/16
+                page_number: 1 of 2
+                organization: POWER GRID COMPANY OF BANGLADESH LTD.
+                form_title: INSPECTION & MAINTENANCE OF POWER TRANSFORMER
+                category: Quality Forms
+
+        - id: section-transformer-details
+          title: Transformer Details
+          widgets:
+            - type: field
+              id: division
+              title: Division
+              field:
+                type: text
+                placeholder: GMD.
+                required: true
+
+            - type: field
+              id: substation-name
+              title: Substation
+              field:
+                type: text
+                required: true
+
+            - type: field
+              id: identification-no
+              title: Identification No
+              field:
+                type: text
+
+            - type: field
+              id: date-inspection
+              title: Date
+              field:
+                type: date
+                required: true
+
+            - type: field
+              id: bay-location
+              title: Bay Location
+              field:
+                type: text
+
+            - type: field
+              id: reference-file
+              title: Reference File
+              field:
+                type: text
+
+            - type: field
+              id: make
+              title: Make
+              field:
+                type: text
+
+            - type: field
+              id: type-transformer
+              title: Type
+              field:
+                type: text
+
+            - type: field
+              id: sl-no
+              title: Sl. No.
+              field:
+                type: text
+
+            - type: field
+              id: r-rating
+              title: R
+              field:
+                type: text
+
+            - type: field
+              id: y-rating
+              title: "Y"
+              field:
+                type: text
+
+            - type: field
+              id: b-rating
+              title: B
+              field:
+                type: text
+
+            - type: field
+              id: year
+              title: Year
+              field:
+                type: text
+
+            - type: checkboxgroup
+              id: schedule-type
+              title: Schedule
+              checkboxgroup:
+                options:
+                  - label: Schedule
+                    value: schedule
+                  - label: Emergency
+                    value: emergency
+                  - label: Special
+                    value: special
+                orientation: horizontal
+
+        - id: section-transformer-number
+          title: Transformer Number
+          widgets:
+            - type: notes
+              id: transformer-note
+              title: Transformer Number
+              notes:
+                style: info
+                content: "TRANSFORMER NUMBER:"
+
+        - id: section-inspection-checklist
+          title: Inspection Items
+          widgets:
+            - type: hierarchicalchecklist
+              id: inspection-items
+              title: Inspection Checklist
+              hierarchicalchecklist:
+                items:
+                  - key: overall-cleanliness
+                    label: Overall Cleanliness
+                    type: radiogroup
+                    number: "1."
+                    options:
+                      - Clean
+                      - Not Cleaned
+
+                  - key: oil-level
+                    label: Oil Level
+                    type: radiogroup
+                    number: "2."
+                    children:
+                      - key: main-tank
+                        label: (i) Main Tank
+                        type: checkbox
+                        number: ""
+
+                      - key: oltc
+                        label: (ii) OLTC
+                        type: checkbox
+                        number: ""
+
+                      - key: bushing
+                        label: (iii) Bushing
+                        type: checkbox
+                        number: ""
+
+                      - key: oil-leak
+                        label: Oil Leak
+                        type: radiogroup
+                        options:
+                          - "Yes"
+                          - "No"
+                        children:
+                          - key: main-tank-leak
+                            label: Main Tank
+                            type: checkbox
+
+                          - key: oltc-leak
+                            label: OLTC
+                            type: checkbox
+
+                  - key: oil-condition
+                    label: Oil Condition(Visual)
+                    type: radiogroup
+                    number: "3."
+                    options:
+                      - Good
+                      - Not Good
+                    children:
+                      - key: main-tank-color
+                        label: Main Tank - Colour
+                        type: text
+
+                      - key: main-tank-oudour
+                        label: Main Tank - Oudour
+                        type: checkbox
+
+                      - key: oltc-color
+                        label: OLTC - Colour
+                        type: text
+
+                      - key: oltc-oudour
+                        label: OLTC - Oudour
+                        type: checkbox
+
+                  - key: temperature-meter
+                    label: Temperature Meter
+                    type: radiogroup
+                    number: "4."
+                    options:
+                      - Good
+                      - Defective
+                    children:
+                      - key: oil-temp
+                        label: (i) Oil
+                        type: checkbox
+
+                      - key: winding-temp
+                        label: (ii) Winding
+                        type: checkbox
+
+                  - key: pressure-relief
+                    label: Pressure Relief Diaphragm for cracks
+                    type: radiogroup
+                    number: "5."
+                    options:
+                      - OK
+                      - Cracked
+
+                  - key: silica-gel-color
+                    label: Color of Silica Gel
+                    type: radiogroup
+                    number: "6."
+                    options:
+                      - OK
+                      - Colour Changed
+
+                  - key: cooler-fans
+                    label: Cooler Fans / Pumps
+                    type: radiogroup
+                    number: "7."
+                    options:
+                      - In operation
+                      - Out of operation
+
+                  - key: local-control
+                    label: Local Control Cubicle
+                    type: radiogroup
+                    number: "8."
+                    options:
+                      - Clean
+                      - Not Cleaned
+                    children:
+                      - key: transformer-cubicle
+                        label: (i) Transformer
+                        type: checkbox
+
+                numbering_style: decimal
+                show_numbering: true
+                indent_size: 20
+
+        - id: section-signatures
+          title: Signatures
+          widgets:
+            - type: signature
+              id: sig-reviewed
+              title: Reviewed By (GMT-1)
+              signature:
+                role: Reviewed By (GMT-1)
+                show_designation: false
+                show_date: true
+
+            - type: signature
+              id: sig-approved
+              title: Approved By (DT)
+              signature:
+                role: Approved By (DT)
+                show_designation: false
+                show_date: true
+
+  metadata:
+    organization: Power Grid Company of Bangladesh
+    document_number: QF-GMD-22
+    effective_date: 2016-01-28
+    revision: "1"
+    tags:
+      - transformer-inspection
+      - maintenance
+      - quality-management
+      - equipment-check

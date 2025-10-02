@@ -1,0 +1,16 @@
+form:
+  id: test-formheader
+  title: Test FormHeader Widget
+  version: "1.0"
+  pages:
+    - id: page-1
+      title: Test Page
+      sections:
+        - id: section-1
+          title: Header Section
+          widgets:
+            - type: formheader
+              id: header-1
+              form_header:
+                document_no: TEST-001
+                organization: Test Organization

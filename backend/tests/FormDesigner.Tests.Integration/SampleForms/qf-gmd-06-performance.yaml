@@ -1,0 +1,61 @@
+form:
+  id: qf-gmd-06
+  title: Sub-Station Performance Report
+  version: "00"
+  pages:
+    - id: page-1
+      title: Performance Report
+      sections:
+        - id: section-header
+          title: Header
+          widgets:
+            - type: formheader
+              id: header
+              form_header:
+                document_no: QF-GMD-06
+                revision_no: "00"
+                effective_date: 15/02/07
+                organization: POWER GRID COMPANY OF BANGLADESH LTD.
+                form_title: Sub-Station Performance Report
+        - id: section-info
+          title: Information
+          widgets:
+            - type: field
+              id: substation
+              field:
+                name: substation
+                label: Substation
+                type: text
+                required: true
+            - type: field
+              id: month
+              field:
+                name: month
+                label: Month
+                type: text
+                required: true
+        - id: section-table
+          title: Performance Data
+          widgets:
+            - type: table
+              id: perf-table
+              table:
+                columns:
+                  - name: sl_no
+                    label: Sl. No.
+                    type: integer
+                  - name: capacity
+                    label: Capacity (MVA)
+                    type: decimal
+                  - name: interruptions
+                    label: Interruptions
+                    type: integer
+                allow_add_rows: true
+        - id: section-sigs
+          title: Approval
+          widgets:
+            - type: signature
+              id: sig1
+              signature:
+                role: Manager
+                show_date: true

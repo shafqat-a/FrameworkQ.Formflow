@@ -1,0 +1,6 @@
+/Users/shafqat/git/FrameworkQ.Formflow/backend/tests/FormDesigner.Tests.Unit/obj/Debug/net10.0/FormDesigner.Tests.Unit.csproj.AssemblyReference.cache
+/Users/shafqat/git/FrameworkQ.Formflow/backend/tests/FormDesigner.Tests.Unit/obj/Debug/net10.0/FormDesigner.Tests.Unit.GeneratedMSBuildEditorConfig.editorconfig
+/Users/shafqat/git/FrameworkQ.Formflow/backend/tests/FormDesigner.Tests.Unit/obj/Debug/net10.0/FormDesigner.Tests.Unit.AssemblyInfoInputs.cache
+/Users/shafqat/git/FrameworkQ.Formflow/backend/tests/FormDesigner.Tests.Unit/obj/Debug/net10.0/FormDesigner.Tests.Unit.AssemblyInfo.cs
+/Users/shafqat/git/FrameworkQ.Formflow/backend/tests/FormDesigner.Tests.Unit/obj/Debug/net10.0/FormDesigner.Tests.Unit.csproj.CoreCompileInputs.cache
+/Users/shafqat/git/FrameworkQ.Formflow/backend/tests/FormDesigner.Tests.Unit/obj/Debug/net10.0/FormDesigner.Tests.Unit.sourcelink.json
