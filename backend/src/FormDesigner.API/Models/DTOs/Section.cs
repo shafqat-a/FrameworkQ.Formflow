@@ -37,4 +37,49 @@ public class Section
     [Required(ErrorMessage = "Section must have widgets array")]
     [JsonPropertyName("widgets")]
     public List<Widget> Widgets { get; set; } = new();
+
+    /// <summary>
+    /// Parent section ID for hierarchical sections (null for root sections)
+    /// </summary>
+    [JsonPropertyName("parent_section_id")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? ParentSectionId { get; set; }
+
+    /// <summary>
+    /// Numbering style for hierarchical sections (auto, manual, none, decimal, alpha)
+    /// </summary>
+    [JsonPropertyName("numbering_style")]
+    public string NumberingStyle { get; set; } = "auto";
+
+    /// <summary>
+    /// Section level (0 for root, 1+ for nested)
+    /// </summary>
+    [JsonPropertyName("level")]
+    public int Level { get; set; } = 0;
+
+    /// <summary>
+    /// Custom section number (overrides auto-numbering)
+    /// </summary>
+    [JsonPropertyName("number")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Number { get; set; }
+
+    /// <summary>
+    /// Child sub-sections
+    /// </summary>
+    [JsonPropertyName("sections")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<Section>? Sections { get; set; }
+
+    /// <summary>
+    /// Whether section is collapsible
+    /// </summary>
+    [JsonPropertyName("collapsible")]
+    public bool Collapsible { get; set; } = false;
+
+    /// <summary>
+    /// Initial collapsed state (if collapsible)
+    /// </summary>
+    [JsonPropertyName("collapsed")]
+    public bool Collapsed { get; set; } = false;
 }
