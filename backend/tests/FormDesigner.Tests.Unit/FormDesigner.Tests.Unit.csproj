@@ -23,4 +23,12 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../../src/FormDesigner.API/FormDesigner.API.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.3.0" />
+  </ItemGroup>
+
 </Project>
