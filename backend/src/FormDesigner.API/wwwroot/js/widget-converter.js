@@ -22,7 +22,7 @@ const WidgetConverter = {
         switch (widget.type) {
             case 'field':
                 if (widget.field) {
-                    internal.label = widget.field.label || widget.field.name || internal.label;
+                    internal.label = widget.field.label || widget.field.name || widget.title || internal.label;
                     internal.required = widget.field.required || false;
                     internal.spec = {
                         type: widget.field.type || 'text',
@@ -35,6 +35,7 @@ const WidgetConverter = {
 
             case 'table':
                 if (widget.table) {
+                    internal.label = widget.title || 'Table Widget';
                     internal.spec = {
                         columns: widget.table.columns || [],
                         allow_add_rows: widget.table.allow_add_rows !== false,
@@ -42,7 +43,8 @@ const WidgetConverter = {
                         min_rows: widget.table.min || 1,
                         max_rows: widget.table.max || null,
                         multi_row_headers: widget.table.multi_row_headers || null,
-                        merged_cells: widget.table.merged_cells || null
+                        merged_cells: widget.table.merged_cells || null,
+                        row_mode: widget.table.row_mode || 'finite'
                     };
                 }
                 break;
@@ -71,38 +73,44 @@ const WidgetConverter = {
                 break;
 
             case 'formheader':
-                if (widget.formheader) {
-                    internal.spec = widget.formheader;
+                if (widget.form_header || widget.formheader) {
+                    internal.label = widget.title || 'Form Header';
+                    internal.spec = widget.form_header || widget.formheader || {};
                 }
                 break;
 
             case 'signature':
                 if (widget.signature) {
+                    internal.label = widget.title || widget.signature.role || 'Signature';
                     internal.spec = widget.signature;
                 }
                 break;
 
             case 'notes':
                 if (widget.notes) {
+                    internal.label = widget.title || widget.notes.title || 'Notes';
                     internal.spec = widget.notes;
                 }
                 break;
 
             case 'hierarchicalchecklist':
-                if (widget.hierarchicalchecklist) {
-                    internal.spec = widget.hierarchicalchecklist;
+                if (widget.hierarchical_checklist || widget.hierarchicalchecklist) {
+                    internal.label = widget.title || 'Hierarchical Checklist';
+                    internal.spec = widget.hierarchical_checklist || widget.hierarchicalchecklist || {};
                 }
                 break;
 
             case 'radiogroup':
-                if (widget.radiogroup) {
-                    internal.spec = widget.radiogroup;
+                if (widget.radio_group || widget.radiogroup) {
+                    internal.label = widget.title || 'Radio Group';
+                    internal.spec = widget.radio_group || widget.radiogroup || {};
                 }
                 break;
 
             case 'checkboxgroup':
-                if (widget.checkboxgroup) {
-                    internal.spec = widget.checkboxgroup;
+                if (widget.checkbox_group || widget.checkboxgroup) {
+                    internal.label = widget.title || 'Checkbox Group';
+                    internal.spec = widget.checkbox_group || widget.checkboxgroup || {};
                 }
                 break;
         }
