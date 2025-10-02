@@ -40,10 +40,11 @@ const FormRuntime = {
         $('#btn-prev-page').on('click', () => this.previousPage());
         $('#btn-next-page').on('click', () => this.nextPage());
 
-        // Track form data changes
-        $(document).on('input change', '.runtime-field input, .runtime-field select, .runtime-field textarea', () => {
+        // Track form data changes and trigger calculations
+        $(document).on('input change', '.runtime-field input, .runtime-field select, .runtime-field textarea, input[type="number"], input[type="text"]', () => {
             this.state.isDirty = true;
             this.collectFormData();
+            this.recalculateFormulas();
         });
 
         // Warn before leaving if unsaved changes
@@ -566,12 +567,103 @@ const FormRuntime = {
 
             if ($el.attr('type') === 'checkbox') {
                 this.state.formData[name] = $el.is(':checked');
+            } else if ($el.attr('type') === 'radio') {
+                if ($el.is(':checked')) {
+                    this.state.formData[name] = $el.val();
+                }
             } else {
                 this.state.formData[name] = $el.val();
             }
         });
 
         return this.state.formData;
+    },
+
+    // Recalculate all formulas in the form
+    recalculateFormulas() {
+        if (!this.state.currentForm) return;
+
+        // Find all fields with formulas
+        this.state.currentForm.pages.forEach(page => {
+            page.sections.forEach(section => {
+                section.widgets.forEach(widget => {
+                    if (widget.type === 'field' && widget.spec?.formula) {
+                        this.calculateField(widget);
+                    } else if (widget.type === 'table') {
+                        this.calculateTableAggregates(widget);
+                    }
+                });
+            });
+        });
+    },
+
+    // Calculate a single field with formula
+    calculateField(widget) {
+        const formula = widget.spec?.formula;
+        if (!formula) return;
+
+        const result = FormulaEvaluator.evaluate(formula, this.state.formData);
+
+        if (result.error) {
+            console.warn(`Formula error in ${widget.id}: ${result.error}`);
+            return;
+        }
+
+        // Update the field value
+        const $field = $(`#${widget.id}`);
+        if ($field.length) {
+            $field.val(result.value);
+            // Mark as readonly
+            $field.attr('readonly', true);
+            $field.addClass('bg-light');
+        }
+
+        // Update form data
+        this.state.formData[widget.id] = result.value;
+    },
+
+    // Calculate table aggregates
+    calculateTableAggregates(widget) {
+        const aggregates = widget.spec?.aggregates;
+        if (!aggregates || aggregates.length === 0) return;
+
+        // Get table rows data
+        const tableId = widget.id;
+        const rows = [];
+
+        $(`[data-table-id="${tableId}"] tr`).each((i, row) => {
+            const rowData = {};
+            $(row).find('input, select').each((j, input) => {
+                const name = $(input).attr('name');
+                if (name) {
+                    rowData[name] = $(input).val();
+                }
+            });
+            if (Object.keys(rowData).length > 0) {
+                rows.push(rowData);
+            }
+        });
+
+        // Calculate each aggregate
+        aggregates.forEach(agg => {
+            const column = agg.column;
+            const type = agg.type || 'SUM';
+            const targetField = agg.target_field;
+
+            if (targetField) {
+                const result = FormulaEvaluator.evaluateAggregate(rows, column, type);
+
+                // Update target field
+                const $target = $(`#${targetField}`);
+                if ($target.length) {
+                    $target.val(result);
+                    $target.attr('readonly', true);
+                    $target.addClass('bg-light');
+                }
+
+                this.state.formData[targetField] = result;
+            }
+        });
     },
 
     // Navigation

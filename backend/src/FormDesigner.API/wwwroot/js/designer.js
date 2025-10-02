@@ -330,6 +330,34 @@ const FormDesigner = {
                     <label>Placeholder</label>
                     <input type="text" class="form-control" id="prop-placeholder" value="${widget.spec.placeholder || ''}" data-prop="spec.placeholder">
                 </div>
+                <div class="form-group">
+                    <label>Formula (for computed fields)</label>
+                    <input type="text" class="form-control" id="prop-formula" value="${widget.spec.formula || ''}" data-prop="spec.formula" placeholder="e.g., quantity * unit_price">
+                    <small class="form-text text-muted" id="formula-help"></small>
+                </div>
+            `;
+        }
+
+        // Add formula validation on change
+        if (widget.type === 'field') {
+            setTimeout(() => {
+                $('#prop-formula').on('input', (e) => {
+                    const formula = $(e.target).val();
+                    if (formula) {
+                        const parsed = FormulaParser.parse(formula);
+                        const helpText = FormulaParser.describe(parsed);
+                        $('#formula-help').text(helpText);
+                        $('#formula-help').removeClass('text-danger text-success');
+                        $('#formula-help').addClass(parsed.valid ? 'text-success' : 'text-danger');
+                    } else {
+                        $('#formula-help').text('');
+                    }
+                });
+                // Trigger initial validation
+                if (widget.spec.formula) {
+                    $('#prop-formula').trigger('input');
+                }
+            }, 100);
             `;
         } else if (widget.type === 'table') {
             html += this.renderTableEditor(widget);
