@@ -148,6 +148,33 @@
         </div>
     </div>
 
+    <!-- Preview Modal -->
+    <div class="modal fade" id="previewModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Form Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Page Navigation -->
+                    <div id="preview-page-nav" class="page-navigation mb-3"></div>
+
+                    <!-- Form Content -->
+                    <div id="preview-content" class="preview-content">
+                        <!-- Preview will be rendered here -->
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="d-flex justify-content-between mt-3">
+                        <button id="preview-btn-prev" class="btn btn-secondary" disabled>Previous</button>
+                        <button id="preview-btn-next" class="btn btn-secondary" disabled>Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- jQuery 3.7 -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 

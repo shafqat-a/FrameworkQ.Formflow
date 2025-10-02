@@ -644,7 +644,341 @@ const FormDesigner = {
     },
 
     previewForm() {
-        this.showMessage('Preview functionality coming soon', 'warning');
+        const formData = this.collectFormData();
+
+        if (!formData.form.pages || formData.form.pages.length === 0) {
+            this.showMessage('Form is empty. Add some widgets to preview.', 'warning');
+            return;
+        }
+
+        // Initialize preview state
+        this.previewState = {
+            currentPageIndex: 0,
+            form: formData.form
+        };
+
+        // Render preview
+        this.renderPreview();
+
+        // Show modal
+        new bootstrap.Modal($('#previewModal')[0]).show();
+
+        // Setup preview navigation
+        $('#preview-btn-prev').off('click').on('click', () => this.previewPreviousPage());
+        $('#preview-btn-next').off('click').on('click', () => this.previewNextPage());
+    },
+
+    renderPreview() {
+        const form = this.previewState.form;
+        const currentPageIndex = this.previewState.currentPageIndex;
+        const page = form.pages[currentPageIndex];
+
+        // Render page navigation
+        let navHtml = '';
+        form.pages.forEach((p, index) => {
+            const activeClass = index === currentPageIndex ? 'active' : '';
+            navHtml += `
+                <button class="page-nav-btn ${activeClass}" data-page-index="${index}">
+                    ${p.title}
+                </button>
+            `;
+        });
+        $('#preview-page-nav').html(navHtml);
+
+        // Render page content
+        let contentHtml = `<h2>${page.title}</h2>`;
+
+        page.sections.forEach(section => {
+            contentHtml += this.renderPreviewSection(section);
+        });
+
+        $('#preview-content').html(contentHtml);
+
+        // Update navigation buttons
+        $('#preview-btn-prev').prop('disabled', currentPageIndex === 0);
+        $('#preview-btn-next').prop('disabled', currentPageIndex === form.pages.length - 1);
+
+        // Page nav buttons
+        $('.page-nav-btn').off('click').on('click', (e) => {
+            this.previewState.currentPageIndex = parseInt($(e.currentTarget).data('page-index'));
+            this.renderPreview();
+        });
+    },
+
+    renderPreviewSection(section) {
+        let html = `
+            <div class="runtime-section" style="margin-bottom: 20px; padding: 20px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid #3498db;">
+                <h3 style="font-size: 1.5rem; font-weight: 600; color: #2c3e50; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #ecf0f1;">
+                    ${section.title}
+                </h3>
+                <div class="runtime-section-widgets">
+        `;
+
+        section.widgets.forEach(widget => {
+            html += this.renderPreviewWidget(widget);
+        });
+
+        html += `
+                </div>
+            </div>
+        `;
+
+        return html;
+    },
+
+    renderPreviewWidget(widget) {
+        switch (widget.type) {
+            case 'field':
+                return this.renderPreviewField(widget);
+            case 'table':
+                return this.renderPreviewTable(widget);
+            case 'grid':
+                return this.renderPreviewGrid(widget);
+            case 'checklist':
+                return this.renderPreviewChecklist(widget);
+            case 'group':
+                return this.renderPreviewGroup(widget);
+            case 'formheader':
+                return this.renderPreviewFormHeader(widget);
+            case 'signature':
+                return this.renderPreviewSignature(widget);
+            case 'notes':
+                return this.renderPreviewNotes(widget);
+            case 'hierarchicalchecklist':
+                return this.renderPreviewHierarchicalChecklist(widget);
+            case 'radiogroup':
+                return this.renderPreviewRadioGroup(widget);
+            case 'checkboxgroup':
+                return this.renderPreviewCheckboxGroup(widget);
+            default:
+                return `<div class="mb-3"><em>Widget type: ${widget.type}</em></div>`;
+        }
+    },
+
+    renderPreviewField(widget) {
+        const requiredStar = widget.required ? '<span class="text-danger">*</span>' : '';
+        const fieldType = widget.spec?.type || 'text';
+        const placeholder = widget.spec?.placeholder || '';
+
+        let inputHtml = '';
+        if (fieldType === 'textarea') {
+            inputHtml = `<textarea class="form-control" placeholder="${placeholder}" disabled></textarea>`;
+        } else if (fieldType === 'select') {
+            inputHtml = `<select class="form-control" disabled><option>-- Select --</option></select>`;
+        } else {
+            inputHtml = `<input type="${fieldType}" class="form-control" placeholder="${placeholder}" disabled>`;
+        }
+
+        return `
+            <div class="mb-3">
+                <label class="form-label"><strong>${widget.label}</strong> ${requiredStar}</label>
+                ${inputHtml}
+            </div>
+        `;
+    },
+
+    renderPreviewTable(widget) {
+        return `
+            <div class="mb-3">
+                <h5>${widget.label}</h5>
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Column 1</th>
+                            <th>Column 2</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" class="form-control form-control-sm" disabled></td>
+                            <td><input type="text" class="form-control form-control-sm" disabled></td>
+                            <td><button class="btn btn-sm btn-danger" disabled>Delete</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-sm btn-primary" disabled>+ Add Row</button>
+            </div>
+        `;
+    },
+
+    renderPreviewGrid(widget) {
+        const cols = widget.spec?.columns_count || 2;
+        return `
+            <div class="mb-3">
+                <div class="row">
+                    <div class="col-md-${12/cols}">
+                        <input type="text" class="form-control" placeholder="Grid Cell" disabled>
+                    </div>
+                    <div class="col-md-${12/cols}">
+                        <input type="text" class="form-control" placeholder="Grid Cell" disabled>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    renderPreviewChecklist(widget) {
+        return `
+            <div class="mb-3">
+                <h5>${widget.label}</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" disabled>
+                    <label class="form-check-label">Checklist item example</label>
+                </div>
+            </div>
+        `;
+    },
+
+    renderPreviewGroup(widget) {
+        return `
+            <div class="mb-3 p-3 border rounded">
+                <h5>${widget.label}</h5>
+                <p class="text-muted">Group contains nested widgets</p>
+            </div>
+        `;
+    },
+
+    renderPreviewFormHeader(widget) {
+        const spec = widget.spec || {};
+        return `
+            <div class="mb-4 p-3 border rounded bg-light">
+                <table class="table table-sm table-bordered mb-0">
+                    <tr>
+                        <td><strong>Document No:</strong> ${spec.document_no || '[Document No]'}</td>
+                        <td><strong>Revision:</strong> ${spec.revision_no || '[Rev]'}</td>
+                        <td><strong>Effective Date:</strong> ${spec.effective_date || '[Date]'}</td>
+                        <td><strong>Page:</strong> ${spec.page_number || '[Page]'}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="text-center">
+                            <strong>${spec.organization || '[Organization]'}</strong><br>
+                            ${spec.form_title || '[Form Title]'}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        `;
+    },
+
+    renderPreviewSignature(widget) {
+        const spec = widget.spec || {};
+        return `
+            <div class="mb-3 p-3 border rounded">
+                <h6>${spec.role || 'Signature'}</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">${spec.name_label || 'Name'}</label>
+                        <input type="text" class="form-control" disabled>
+                    </div>
+                    ${spec.show_designation ? `
+                    <div class="col-md-6">
+                        <label class="form-label">${spec.designation_label || 'Designation'}</label>
+                        <input type="text" class="form-control" disabled>
+                    </div>
+                    ` : ''}
+                </div>
+                ${spec.show_date ? `
+                <div class="mt-2">
+                    <label class="form-label">${spec.date_label || 'Date'}</label>
+                    <input type="date" class="form-control" disabled>
+                </div>
+                ` : ''}
+                ${spec.require_signature_image ? `
+                <div class="mt-2">
+                    <label class="form-label">Signature</label>
+                    <div style="border: 2px dashed #ccc; height: ${spec.signature_height || 100}px; width: ${spec.signature_width || 400}px; display: flex; align-items: center; justify-content: center; color: #999;">
+                        Signature area
+                    </div>
+                </div>
+                ` : ''}
+            </div>
+        `;
+    },
+
+    renderPreviewNotes(widget) {
+        const spec = widget.spec || {};
+        const styleClass = spec.style === 'warning' ? 'alert-warning' : spec.style === 'note' ? 'alert-info' : 'alert-primary';
+        return `
+            <div class="mb-3 alert ${styleClass}">
+                ${spec.title ? `<h6 class="alert-heading">${spec.title}</h6>` : ''}
+                <p class="mb-0">${spec.content || 'Note content'}</p>
+            </div>
+        `;
+    },
+
+    renderPreviewHierarchicalChecklist(widget) {
+        return `
+            <div class="mb-3">
+                <h5>${widget.label}</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" disabled>
+                    <label class="form-check-label">1.0 Parent item</label>
+                </div>
+                <div class="form-check ms-4">
+                    <input class="form-check-input" type="checkbox" disabled>
+                    <label class="form-check-label">1.1 Child item</label>
+                </div>
+            </div>
+        `;
+    },
+
+    renderPreviewRadioGroup(widget) {
+        const spec = widget.spec || {};
+        const orientation = spec.orientation === 'horizontal' ? 'd-flex gap-3' : '';
+        const options = spec.options || [{label: 'Option 1', value: '1'}, {label: 'Option 2', value: '2'}];
+
+        let optionsHtml = options.map(opt => `
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="preview-${widget.id}" disabled>
+                <label class="form-check-label">${opt.label}</label>
+            </div>
+        `).join('');
+
+        return `
+            <div class="mb-3">
+                <label class="form-label"><strong>${widget.label}</strong></label>
+                <div class="${orientation}">
+                    ${optionsHtml}
+                </div>
+            </div>
+        `;
+    },
+
+    renderPreviewCheckboxGroup(widget) {
+        const spec = widget.spec || {};
+        const orientation = spec.orientation === 'horizontal' ? 'd-flex gap-3' : '';
+        const options = spec.options || [{label: 'Option 1', value: '1'}, {label: 'Option 2', value: '2'}];
+
+        let optionsHtml = options.map(opt => `
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" disabled>
+                <label class="form-check-label">${opt.label}</label>
+            </div>
+        `).join('');
+
+        return `
+            <div class="mb-3">
+                <label class="form-label"><strong>${widget.label}</strong></label>
+                <div class="${orientation}">
+                    ${optionsHtml}
+                </div>
+            </div>
+        `;
+    },
+
+    previewPreviousPage() {
+        if (this.previewState.currentPageIndex > 0) {
+            this.previewState.currentPageIndex--;
+            this.renderPreview();
+        }
+    },
+
+    previewNextPage() {
+        if (this.previewState.currentPageIndex < this.previewState.form.pages.length - 1) {
+            this.previewState.currentPageIndex++;
+            this.renderPreview();
+        }
     },
 
     async exportYaml() {
