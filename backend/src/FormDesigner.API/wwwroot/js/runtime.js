@@ -719,20 +719,12 @@ const FormRuntime = {
         try {
             const data = this.collectFormData();
 
-            // Validate required fields
-            let isValid = true;
-            $('.runtime-field.required input, .runtime-field.required select, .runtime-field.required textarea').each((i, el) => {
-                if (!$(el).val()) {
-                    $(el).addClass('is-invalid');
-                    isValid = false;
-                } else {
-                    $(el).removeClass('is-invalid');
-                }
-            });
+            // Validate all widgets
+            const validationErrors = this.validateForm();
 
-            if (!isValid) {
+            if (validationErrors.length > 0) {
                 bootstrap.Modal.getInstance($('#submitConfirmModal')[0]).hide();
-                this.showMessage('Please fill in all required fields', 'error');
+                this.showMessage(validationErrors[0], 'error');
                 return;
             }
 
@@ -787,6 +779,87 @@ const FormRuntime = {
         $('#form-container').hide();
         $('#welcome-screen').show();
         $('#form-title-display').text('Form Runtime');
+    },
+
+    // Validate entire form
+    validateForm() {
+        const errors = [];
+
+        // Clear all previous validation states
+        $('.is-invalid').removeClass('is-invalid');
+
+        // Validate each widget type
+        this.state.currentForm.pages.forEach(page => {
+            page.sections.forEach(section => {
+                section.widgets.forEach(widget => {
+                    const widgetErrors = this.validateWidget(widget);
+                    errors.push(...widgetErrors);
+                });
+            });
+        });
+
+        return errors;
+    },
+
+    // Validate a single widget
+    validateWidget(widget) {
+        const errors = [];
+
+        switch (widget.type) {
+            case 'field':
+                if (widget.required) {
+                    const value = this.state.formData[widget.id];
+                    if (!value || value === '') {
+                        $(`#${widget.id}`).addClass('is-invalid');
+                        errors.push(`${widget.label} is required`);
+                    }
+                }
+                break;
+
+            case 'radiogroup':
+                if (widget.spec?.required) {
+                    const selected = $(`input[name="${widget.id}"]:checked`).length > 0;
+                    if (!selected) {
+                        errors.push(`${widget.label} requires a selection`);
+                    }
+                }
+                break;
+
+            case 'checkboxgroup':
+                const checked = $(`input[name^="${widget.id}_"]:checked`).length;
+                const spec = widget.spec || {};
+
+                if (spec.min_selections && checked < spec.min_selections) {
+                    errors.push(`${widget.label} requires at least ${spec.min_selections} selection(s)`);
+                }
+
+                if (spec.max_selections && checked > spec.max_selections) {
+                    errors.push(`${widget.label} allows at most ${spec.max_selections} selection(s)`);
+                }
+                break;
+
+            case 'signature':
+                if (widget.spec?.name_required) {
+                    const name = this.state.formData[`${widget.id}_name`];
+                    if (!name || name === '') {
+                        $(`#${widget.id}_name`).addClass('is-invalid');
+                        errors.push(`${widget.label} - Name is required`);
+                    }
+                }
+                break;
+
+            case 'hierarchicalchecklist':
+                if (widget.spec?.all_required) {
+                    const checkboxes = $(`input[id^="${widget.id}_"]`);
+                    const unchecked = checkboxes.filter((i, el) => !$(el).is(':checked'));
+                    if (unchecked.length > 0) {
+                        errors.push(`${widget.label} - All items must be checked`);
+                    }
+                }
+                break;
+        }
+
+        return errors;
     },
 
     // Show status message
