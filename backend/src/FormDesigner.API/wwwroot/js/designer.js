@@ -358,8 +358,9 @@ const FormDesigner = {
                     $('#prop-formula').trigger('input');
                 }
             }, 100);
-            `;
-        } else if (widget.type === 'table') {
+        }
+
+        if (widget.type === 'table') {
             html += this.renderTableEditor(widget);
         } else if (widget.type === 'radiogroup' || widget.type === 'checkboxgroup') {
             html += this.renderOptionsEditor(widget);
