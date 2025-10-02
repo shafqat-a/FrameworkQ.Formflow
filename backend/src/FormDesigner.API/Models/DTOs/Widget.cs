@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using FormDesigner.API.Models.DTOs.Specs;
+using FormDesigner.API.Models.DTOs.Widgets;
 
 namespace FormDesigner.API.Models.DTOs;
 
@@ -96,4 +97,53 @@ public class Widget
     [JsonPropertyName("checklist")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public ChecklistSpec? Checklist { get; set; }
+
+    /// <summary>
+    /// FormHeader specification (when type = "formheader")
+    /// </summary>
+    [JsonPropertyName("formheader")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public FormHeaderSpec? FormHeader { get; set; }
+
+    /// <summary>
+    /// Signature specification (when type = "signature")
+    /// </summary>
+    [JsonPropertyName("signature")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public SignatureSpec? Signature { get; set; }
+
+    /// <summary>
+    /// Notes specification (when type = "notes")
+    /// </summary>
+    [JsonPropertyName("notes")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public NotesSpec? Notes { get; set; }
+
+    /// <summary>
+    /// HierarchicalChecklist specification (when type = "hierarchicalchecklist")
+    /// </summary>
+    [JsonPropertyName("hierarchicalchecklist")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public HierarchicalChecklistSpec? HierarchicalChecklist { get; set; }
+
+    /// <summary>
+    /// RadioGroup specification (when type = "radiogroup")
+    /// </summary>
+    [JsonPropertyName("radiogroup")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public RadioGroupSpec? RadioGroup { get; set; }
+
+    /// <summary>
+    /// CheckboxGroup specification (when type = "checkboxgroup")
+    /// </summary>
+    [JsonPropertyName("checkboxgroup")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public CheckboxGroupSpec? CheckboxGroup { get; set; }
+
+    /// <summary>
+    /// TimePicker specification (when type = "timepicker")
+    /// </summary>
+    [JsonPropertyName("timepicker")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public TimePickerSpec? TimePicker { get; set; }
 }
