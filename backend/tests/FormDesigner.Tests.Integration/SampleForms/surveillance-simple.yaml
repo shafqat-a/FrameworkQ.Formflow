@@ -1,0 +1,59 @@
+form:
+  id: qf-gmd-17-simple
+  title: Surveillance Visit Form
+  version: "01"
+  pages:
+    - id: page-1
+      title: Surveillance Checklist
+      sections:
+        - id: section-header
+          title: Header
+          widgets:
+            - type: formheader
+              id: doc-header
+              formheader:
+                document_no: QF-GMD-17
+                revision_no: "01"
+                effective_date: 03/03/15
+                organization: POWER GRID COMPANY OF BANGLADESH LTD.
+                form_title: SURVEILLANCE VISIT OF SUB-STATION
+
+        - id: section-info
+          title: Basic Info
+          widgets:
+            - type: field
+              id: office-name
+              field:
+                name: office-name
+                label: Name of Office / Sub-station
+                type: text
+                required: true
+
+        - id: section-notes
+          title: Instructions
+          widgets:
+            - type: notes
+              id: inspection-note
+              notes:
+                title: Important
+                content: Please complete all inspection items
+                style: info
+
+        - id: section-signatures
+          title: Approvals
+          widgets:
+            - type: signature
+              id: sig-reviewed
+              signature:
+                role: Reviewed by (GMT-1)
+                name_required: true
+                show_designation: true
+                show_date: true
+
+            - type: signature
+              id: sig-approved
+              signature:
+                role: Approved by (DT)
+                name_required: true
+                show_designation: true
+                show_date: true
