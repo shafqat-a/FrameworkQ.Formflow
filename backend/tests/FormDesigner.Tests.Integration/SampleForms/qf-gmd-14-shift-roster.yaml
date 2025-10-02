@@ -1,0 +1,103 @@
+form:
+  id: qf-gmd-14
+  title: Monthly Shift Duty Roaster
+  version: "01"
+  pages:
+    - id: page-1
+      title: Shift Duty Roaster
+      sections:
+        - id: section-header
+          title: Form Header
+          widgets:
+            - type: formheader
+              id: header-widget
+              form_header:
+                document_no: QF-GMD-14
+                revision_no: "01"
+                effective_date: 11/11/12
+                page_number: 1 of 1
+                organization: POWER GRID COMPANY OF BANGLADESH LTD.
+                form_title: MONTHLY SHIFT DUTY ROASTER
+                category: Quality Forms
+
+        - id: section-info
+          title: Basic Info
+          widgets:
+            - type: field
+              id: grid-circle
+              field:
+                name: grid-circle
+                label: Grid Circle
+                type: text
+                required: true
+
+            - type: field
+              id: month
+              field:
+                name: month
+                label: Month
+                type: text
+                required: true
+
+        - id: section-roster
+          title: Monthly Roster
+          widgets:
+            - type: table
+              id: duty-roster
+              table:
+                row_mode: finite
+                min: 1
+                max: 50
+                allow_add_rows: true
+                allow_delete_rows: true
+                columns:
+                  - name: sl_no
+                    label: Sl. No.
+                    type: integer
+                    required: true
+                  - name: name
+                    label: Name
+                    type: string
+                    required: true
+                  - name: day_1
+                    label: "1"
+                    type: string
+                  - name: day_2
+                    label: "2"
+                    type: string
+                  - name: day_3
+                    label: "3"
+                    type: string
+                  - name: day_4
+                    label: "4"
+                    type: string
+                  - name: day_5
+                    label: "5"
+                    type: string
+
+        - id: section-notes
+          title: Shift Information
+          widgets:
+            - type: notes
+              id: shift-notes
+              notes:
+                style: info
+                title: NOTE
+                content: "A shift: 06:00 – 14:00 hr. B shift: 14:00 – 22:00 hr. C shift: 22:00 – 06:00 hr"
+
+        - id: section-approval
+          title: Approval
+          widgets:
+            - type: signature
+              id: sig-reviewed
+              signature:
+                role: Reviewed by (GMT-1)
+                show_designation: false
+                show_date: true
+
+            - type: signature
+              id: sig-approved
+              signature:
+                role: Approved by (DT)
+                show_designation: false
+                show_date: true

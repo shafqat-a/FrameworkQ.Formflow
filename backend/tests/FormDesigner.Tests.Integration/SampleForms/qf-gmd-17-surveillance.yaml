@@ -1,0 +1,107 @@
+form:
+  id: qf-gmd-17
+  title: Surveillance Visit of Sub-Station
+  version: "01"
+  pages:
+    - id: page-1
+      title: Surveillance Visit Checklist
+      sections:
+        - id: section-header
+          title: Form Header
+          widgets:
+            - type: formheader
+              id: header-widget
+              form_header:
+                document_no: QF-GMD-17
+                revision_no: "01"
+                effective_date: 03/03/15
+                page_number: 1 of 1
+                organization: POWER GRID COMPANY OF BANGLADESH LTD.
+                form_title: SURVEILLANCE VISIT OF SUB-STATION
+                category: QUALITY FORMS
+                show_on_all_pages: true
+
+        - id: section-basic-info
+          title: Basic Information
+          widgets:
+            - type: field
+              id: office-substation
+              field:
+                name: office-substation
+                label: Name of the Office / Sub-station
+                type: text
+                required: true
+
+            - type: field
+              id: name-designation
+              field:
+                name: name-designation
+                label: Name & Designation
+                type: text
+                required: true
+
+            - type: field
+              id: inspection-datetime
+              field:
+                name: inspection-datetime
+                label: Date & time inspection
+                type: datetime
+                required: true
+
+        - id: section-inspection
+          title: Inspection Checklist
+          widgets:
+            - type: radiogroup
+              id: transformer-silica
+              radio_group:
+                options:
+                  - label: Good
+                    value: good
+                  - label: Acceptable
+                    value: acceptable
+                  - label: Poor
+                    value: poor
+                orientation: horizontal
+                required: false
+
+            - type: radiogroup
+              id: oil-leakage
+              radio_group:
+                options:
+                  - label: "Yes"
+                    value: "yes"
+                  - label: "No"
+                    value: "no"
+                orientation: horizontal
+
+            - type: radiogroup
+              id: tap-changer
+              radio_group:
+                options:
+                  - label: Healthy
+                    value: healthy
+                  - label: Defective
+                    value: defective
+                orientation: horizontal
+
+        - id: section-signatures
+          title: Signatures
+          widgets:
+            - type: signature
+              id: sig-reviewed
+              signature:
+                role: Reviewed by (GMT-1)
+                name_label: Name
+                name_required: true
+                show_designation: false
+                show_date: true
+                auto_date: false
+
+            - type: signature
+              id: sig-approved
+              signature:
+                role: Approved by (DT)
+                name_label: Name
+                name_required: true
+                show_designation: false
+                show_date: true
