@@ -253,6 +253,18 @@ const FormRuntime = {
                 return this.renderChecklistWidget(widget);
             case 'group':
                 return this.renderGroupWidget(widget);
+            case 'formheader':
+                return this.renderFormHeaderWidget(widget);
+            case 'signature':
+                return this.renderSignatureWidget(widget);
+            case 'notes':
+                return this.renderNotesWidget(widget);
+            case 'hierarchicalchecklist':
+                return this.renderHierarchicalChecklistWidget(widget);
+            case 'radiogroup':
+                return this.renderRadioGroupWidget(widget);
+            case 'checkboxgroup':
+                return this.renderCheckboxGroupWidget(widget);
             default:
                 return `<div class="runtime-widget">Unknown widget type: ${widget.type}</div>`;
         }
@@ -354,6 +366,176 @@ const FormRuntime = {
             <div class="runtime-widget runtime-group" data-widget-id="${widget.id}">
                 <h4 class="runtime-group-title">${widget.label}</h4>
                 ${this.renderWidgets(childWidgets)}
+            </div>
+        `;
+    },
+
+    // Render FormHeader widget
+    renderFormHeaderWidget(widget) {
+        const spec = widget.spec || {};
+        return `
+            <div class="runtime-widget runtime-form-header mb-4" data-widget-id="${widget.id}">
+                <table class="table table-bordered table-sm">
+                    <tr>
+                        <td class="bg-light"><strong>Quality Management System</strong></td>
+                        <td colspan="3" class="text-center"><strong>${spec.organization || 'ORGANIZATION'}</strong></td>
+                        <td class="bg-light"><strong>${spec.category || 'QUALITY FORMS'}</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Document No:</strong></td>
+                        <td><input type="text" class="form-control form-control-sm" id="${widget.id}_doc_no" name="${widget.id}_doc_no" value="${spec.document_no || ''}"></td>
+                        <td><strong>Revision No.:</strong></td>
+                        <td><input type="text" class="form-control form-control-sm" id="${widget.id}_rev_no" name="${widget.id}_rev_no" value="${spec.revision_no || ''}"></td>
+                        <td rowspan="2" class="text-center align-middle"><strong>Page:</strong><br>${spec.page_number || '1 of 1'}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="text-center"><strong>TITLE: ${spec.form_title || this.state.currentForm?.title || 'FORM TITLE'}</strong></td>
+                        <td><strong>Effective Date:</strong></td>
+                        <td><input type="date" class="form-control form-control-sm" id="${widget.id}_eff_date" name="${widget.id}_eff_date" value="${spec.effective_date || ''}"></td>
+                    </tr>
+                </table>
+            </div>
+        `;
+    },
+
+    // Render Signature widget
+    renderSignatureWidget(widget) {
+        const spec = widget.spec || {};
+        return `
+            <div class="runtime-widget runtime-signature mb-3" data-widget-id="${widget.id}">
+                <div class="border p-3 bg-light">
+                    <h6 class="mb-3">${spec.role || 'Signature'}</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label">${spec.name_label || 'Name'}${spec.name_required ? ' *' : ''}</label>
+                            <input type="text" class="form-control" id="${widget.id}_name" name="${widget.id}_name" ${spec.name_required ? 'required' : ''}>
+                        </div>
+                        ${spec.show_designation ? `
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label">${spec.designation_label || 'Designation'}</label>
+                            <input type="text" class="form-control" id="${widget.id}_designation" name="${widget.id}_designation">
+                        </div>
+                        ` : ''}
+                    </div>
+                    ${spec.show_date ? `
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <label class="form-label">${spec.date_label || 'Date'}</label>
+                            <input type="date" class="form-control" id="${widget.id}_date" name="${widget.id}_date" ${spec.auto_date ? `value="${new Date().toISOString().split('T')[0]}"` : ''}>
+                        </div>
+                    </div>
+                    ` : ''}
+                    ${spec.require_signature_image ? `
+                    <div class="mt-3">
+                        <label class="form-label">Signature</label>
+                        <div style="border: 2px solid #bdc3c7; background: white; width: ${spec.signature_width || 400}px; height: ${spec.signature_height || 100}px; display: flex; align-items: center; justify-content: center; color: #95a5a6;">
+                            <em>Click to sign</em>
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    },
+
+    // Render Notes widget
+    renderNotesWidget(widget) {
+        const spec = widget.spec || {};
+        const styleClass = spec.style === 'warning' ? 'alert-warning' : spec.style === 'note' ? 'alert-info' : 'alert-primary';
+        return `
+            <div class="runtime-widget runtime-notes mb-3" data-widget-id="${widget.id}">
+                <div class="alert ${styleClass}">
+                    ${spec.title ? `<h6 class="alert-heading">${spec.title}</h6>` : ''}
+                    <div>${spec.content || ''}</div>
+                </div>
+            </div>
+        `;
+    },
+
+    // Render HierarchicalChecklist widget
+    renderHierarchicalChecklistWidget(widget) {
+        const spec = widget.spec || {};
+        const items = spec.items || [];
+
+        const renderItems = (items, level = 0) => {
+            return items.map((item, index) => {
+                const indent = level * (spec.indent_size || 20);
+                const number = item.number || `${level + 1}.${index}`;
+                const numberDisplay = spec.show_numbering ? `${number} ` : '';
+
+                let itemHtml = `
+                    <div class="form-check" style="margin-left: ${indent}px;">
+                        <input class="form-check-input" type="checkbox" id="${widget.id}_${item.key}" name="${widget.id}_${item.key}" ${item.required || spec.all_required ? 'required' : ''}>
+                        <label class="form-check-label" for="${widget.id}_${item.key}">
+                            ${numberDisplay}${item.label}
+                        </label>
+                    </div>
+                `;
+
+                if (item.children && item.children.length > 0) {
+                    itemHtml += renderItems(item.children, level + 1);
+                }
+
+                return itemHtml;
+            }).join('');
+        };
+
+        return `
+            <div class="runtime-widget runtime-hierarchical-checklist mb-3" data-widget-id="${widget.id}">
+                <h5 class="mb-3">${widget.label}</h5>
+                ${renderItems(items)}
+            </div>
+        `;
+    },
+
+    // Render RadioGroup widget
+    renderRadioGroupWidget(widget) {
+        const spec = widget.spec || {};
+        const options = spec.options || [];
+        const orientation = spec.orientation === 'horizontal' ? 'd-flex gap-3' : '';
+        const requiredAttr = spec.required ? 'required' : '';
+
+        const optionsHtml = options.map((opt, index) => `
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="${widget.id}" id="${widget.id}_${index}" value="${opt.value || opt}" ${requiredAttr}>
+                <label class="form-check-label" for="${widget.id}_${index}">
+                    ${opt.label || opt}
+                </label>
+            </div>
+        `).join('');
+
+        return `
+            <div class="runtime-widget runtime-radio-group mb-3" data-widget-id="${widget.id}">
+                <label class="form-label"><strong>${widget.label}</strong>${spec.required ? ' <span class="text-danger">*</span>' : ''}</label>
+                <div class="${orientation}">
+                    ${optionsHtml}
+                </div>
+            </div>
+        `;
+    },
+
+    // Render CheckboxGroup widget
+    renderCheckboxGroupWidget(widget) {
+        const spec = widget.spec || {};
+        const options = spec.options || [];
+        const orientation = spec.orientation === 'horizontal' ? 'd-flex gap-3' : spec.orientation === 'grid' ? `row row-cols-${spec.grid_columns || 2}` : '';
+
+        const optionsHtml = options.map((opt, index) => `
+            <div class="form-check ${spec.orientation === 'grid' ? 'col' : ''}">
+                <input class="form-check-input" type="checkbox" name="${widget.id}_${index}" id="${widget.id}_${index}" value="${opt.value || opt}">
+                <label class="form-check-label" for="${widget.id}_${index}">
+                    ${opt.label || opt}
+                </label>
+            </div>
+        `).join('');
+
+        return `
+            <div class="runtime-widget runtime-checkbox-group mb-3" data-widget-id="${widget.id}">
+                <label class="form-label"><strong>${widget.label}</strong></label>
+                ${spec.min_selections || spec.max_selections ? `<small class="text-muted d-block mb-2">Select ${spec.min_selections ? `at least ${spec.min_selections}` : ''}${spec.min_selections && spec.max_selections ? ' and ' : ''}${spec.max_selections ? `at most ${spec.max_selections}` : ''}</small>` : ''}
+                <div class="${orientation}">
+                    ${optionsHtml}
+                </div>
             </div>
         `;
     },
