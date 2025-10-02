@@ -159,13 +159,15 @@ A form designer needs to create complex data collection forms without writing YA
 - **FR-019**: System MUST [NEEDS CLARIFICATION: user authentication/authorization not specified - who can create/edit/submit forms?]
 
 **Widget Palette & Canvas**
-- **FR-020**: System MUST provide a palette with draggable widgets: Field, Group, Table, Grid, Checklist
+- **FR-020**: System MUST provide a palette with draggable widgets: Field, Group, Table, Grid, Checklist, FormHeader, Signature, Notes, HierarchicalChecklist
 - **FR-021**: System MUST support drag-and-drop from palette to canvas sections
 - **FR-022**: System MUST allow users to organize widgets within sections on each page
 - **FR-023**: System MUST support section creation and deletion
 - **FR-024**: System MUST allow section titles to be edited inline
 - **FR-025**: System MUST support widget deletion from sections
 - **FR-026**: System MUST generate unique IDs for new widgets
+- **FR-064**: System MUST support nested/hierarchical sections with numbering (1.0, 1.1, 1.2, 2.0, etc.)
+- **FR-065**: System MUST allow sections to contain sub-sections for complex form organization
 
 **Property Inspector**
 - **FR-027**: System MUST display widget properties when a widget is selected
@@ -176,11 +178,21 @@ A form designer needs to create complex data collection forms without writing YA
 - **FR-032**: System MUST support grid property configuration: row/column generators, cell type
 - **FR-033**: System MUST support checklist property configuration: items with keys, labels, types
 - **FR-034**: System MUST support group property configuration: nested fields and layout
+- **FR-066**: System MUST support FormHeader widget configuration: document_no, revision_no, effective_date, page_number fields
+- **FR-067**: System MUST support Signature widget configuration: role, name, designation, date fields
+- **FR-068**: System MUST support Notes/Instructions widget configuration: text content, formatting
+- **FR-069**: System MUST support advanced table features: merged cells (colspan/rowspan), multi-row headers, checkbox/radio columns
+- **FR-070**: System MUST support RadioGroup widget configuration: options with labels and values
+- **FR-071**: System MUST support CheckboxGroup widget configuration: multiple options with labels and values
+- **FR-072**: System MUST support TimePicker field type configuration
 
 **Data Types & Validation**
-- **FR-035**: System MUST support field types: string, text, integer, decimal, date, time, datetime, bool, enum, attachment, signature
+- **FR-035**: System MUST support field types: string, text, integer, decimal, date, time, datetime, bool, enum, attachment, signature, radio, checkbox
 - **FR-036**: System MUST validate property values according to their expected format
 - **FR-037**: System MUST enforce naming patterns for IDs (lowercase, alphanumeric, hyphens, underscores)
+- **FR-073**: System MUST support client-side formula calculation for computed fields in runtime mode
+- **FR-074**: System MUST support auto-sum/total calculations for table columns
+- **FR-075**: System MUST validate radio/checkbox selections against defined options
 
 **Export & Generation**
 - **FR-038**: System MUST export form definitions as YAML compliant with DSL v0.1 specification
@@ -214,6 +226,9 @@ A form designer needs to create complex data collection forms without writing YA
 - **FR-058**: System MUST show drag-over state on valid drop zones
 - **FR-059**: System MUST maintain form state during page navigation
 - **FR-060**: System MUST provide undo/redo capabilities [NEEDS CLARIFICATION: Is undo/redo required or future enhancement?]
+- **FR-076**: System MUST support page layout and orientation configuration (portrait/landscape)
+- **FR-077**: System MUST support print-friendly layouts for generated forms
+- **FR-078**: System MUST support multi-language form labels (i18n) [NEEDS CLARIFICATION: Full i18n support or future enhancement?]
 
 **Compliance & Standards**
 - **FR-061**: System MUST generate YAML that validates against DSL v0.1 JSON schema
@@ -228,18 +243,27 @@ A form designer needs to create complex data collection forms without writing YA
 
 - **Page**: A logical grouping within a form containing ID, title, multilingual labels, and collection of sections. Forms can have multiple pages for complex workflows
 
-- **Section**: A container within a page with ID, title, multilingual labels, and collection of widgets. Sections organize related widgets visually
+- **Section**: A container within a page with ID, title, multilingual labels, and collection of widgets. Sections organize related widgets visually. Sections can be nested to create hierarchical structures with automatic numbering
 
 - **Widget**: The base unit of form interaction. Types include:
   - **Field Widget**: Single data input with name, label, type, validation rules, placeholder, default value, unit, formula for computed values
   - **Group Widget**: Container for related fields with optional layout configuration (columns)
-  - **Table Widget**: Repeating rows with defined columns, row mode (finite/infinite), min/max rows, row generators, aggregates
+  - **Table Widget**: Repeating rows with defined columns, row mode (finite/infinite), min/max rows, row generators, aggregates. Supports merged cells (colspan/rowspan), multi-row headers, checkbox/radio columns
   - **Grid Widget**: Two-dimensional data entry with row/column generators and cell type specification
   - **Checklist Widget**: List of checkbox items with keys, labels, and types
+  - **HierarchicalChecklist Widget**: Checklist with nested items and hierarchical numbering (1.0, 1.1, 1.2, etc.)
+  - **FormHeader Widget**: Document metadata display including document_no, revision_no, effective_date, page_number
+  - **Signature Widget**: Signature capture with role, name, designation, date fields
+  - **Notes Widget**: Instructions or notes section with formatted text
+  - **RadioGroup Widget**: Single-selection from predefined options
+  - **CheckboxGroup Widget**: Multi-selection from predefined options
+  - **TimePicker Widget**: Time selection field
 
 - **Field Specification**: Data type definition including type (string, integer, decimal, date, time, datetime, bool, enum, etc.), constraints (required, readonly, min, max, pattern), enum values, default value, formula expression, formatting rules
 
-- **Table Column**: Column definition within table widget with name, label, type, validation rules, formula expression, formatting
+- **Table Column**: Column definition within table widget with name, label, type, validation rules, formula expression, formatting. Supports colspan/rowspan for merged cells, and can be checkbox/radio type
+
+- **Table Header**: Multi-row header definition for complex table structures with hierarchical column grouping
 
 - **Form Metadata**: Organizational information including document number, effective date, revision number, reference links, tags for categorization
 
