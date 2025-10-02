@@ -331,16 +331,47 @@ const FormDesigner = {
                     <input type="text" class="form-control" id="prop-placeholder" value="${widget.spec.placeholder || ''}" data-prop="spec.placeholder">
                 </div>
             `;
+        } else if (widget.type === 'table') {
+            html += this.renderTableEditor(widget);
+        } else if (widget.type === 'radiogroup' || widget.type === 'checkboxgroup') {
+            html += this.renderOptionsEditor(widget);
+        } else if (widget.type === 'formheader') {
+            html += this.renderFormHeaderEditor(widget);
+        } else if (widget.type === 'signature') {
+            html += this.renderSignatureEditor(widget);
+        } else if (widget.type === 'notes') {
+            html += this.renderNotesEditor(widget);
         }
 
         $('#inspector-content').html(html);
 
         // Attach change handlers
         $('#inspector-content input, #inspector-content select').on('change', (e) => {
-            this.updateWidgetProperty(widgetId, $(e.currentTarget).data('prop'), $(e.currentTarget).val());
+            const $el = $(e.currentTarget);
+            if ($el.data('column-prop') !== undefined) {
+                this.updateColumnProperty(widgetId, $el.data('column-prop'), $el.val());
+            } else if ($el.data('option-prop') !== undefined) {
+                this.updateOptionProperty(widgetId, $el.data('option-prop'), $el.val());
+            } else if ($el.data('prop')) {
+                this.updateWidgetProperty(widgetId, $el.data('prop'), $el.val());
+            }
         });
         $('#inspector-content input[type="checkbox"]').on('change', (e) => {
             this.updateWidgetProperty(widgetId, $(e.currentTarget).data('prop'), $(e.currentTarget).is(':checked'));
+        });
+
+        // Table column management
+        $('#btn-add-column').on('click', () => this.addTableColumn(widgetId));
+        $(document).on('click', '.btn-delete-column', (e) => {
+            const index = parseInt($(e.currentTarget).data('index'));
+            this.deleteTableColumn(widgetId, index);
+        });
+
+        // Options management
+        $('#btn-add-option').on('click', () => this.addOption(widgetId));
+        $(document).on('click', '.btn-delete-option', (e) => {
+            const index = parseInt($(e.currentTarget).data('index'));
+            this.deleteOption(widgetId, index);
         });
     },
 
@@ -778,26 +809,51 @@ const FormDesigner = {
     },
 
     renderPreviewTable(widget) {
+        const columns = widget.spec?.columns || [];
+        const allowAddRows = widget.spec?.allow_add_rows !== false;
+
+        if (columns.length === 0) {
+            return `
+                <div class="mb-3 p-3 border rounded bg-light">
+                    <h5>${widget.label}</h5>
+                    <p class="text-muted"><em>No columns defined. Select the table widget and add columns in the properties panel.</em></p>
+                </div>
+            `;
+        }
+
+        let headerHtml = columns.map(col => `<th>${col.label || col.name}</th>`).join('');
+        if (allowAddRows) {
+            headerHtml += '<th style="width: 80px;">Actions</th>';
+        }
+
+        let rowHtml = columns.map(col => {
+            if (col.type === 'checkbox') {
+                return '<td><input type="checkbox" class="form-check-input" disabled></td>';
+            } else if (col.type === 'integer' || col.type === 'decimal') {
+                return '<td><input type="number" class="form-control form-control-sm" disabled></td>';
+            } else if (col.type === 'date') {
+                return '<td><input type="date" class="form-control form-control-sm" disabled></td>';
+            } else {
+                return '<td><input type="text" class="form-control form-control-sm" disabled></td>';
+            }
+        }).join('');
+
+        if (allowAddRows) {
+            rowHtml += '<td><button class="btn btn-sm btn-danger" disabled>×</button></td>';
+        }
+
         return `
             <div class="mb-3">
                 <h5>${widget.label}</h5>
                 <table class="table table-bordered">
                     <thead class="table-light">
-                        <tr>
-                            <th>Column 1</th>
-                            <th>Column 2</th>
-                            <th>Actions</th>
-                        </tr>
+                        <tr>${headerHtml}</tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><input type="text" class="form-control form-control-sm" disabled></td>
-                            <td><input type="text" class="form-control form-control-sm" disabled></td>
-                            <td><button class="btn btn-sm btn-danger" disabled>Delete</button></td>
-                        </tr>
+                        <tr>${rowHtml}</tr>
                     </tbody>
                 </table>
-                <button class="btn btn-sm btn-primary" disabled>+ Add Row</button>
+                ${allowAddRows ? '<button class="btn btn-sm btn-primary" disabled>+ Add Row</button>' : ''}
             </div>
         `;
     },
@@ -1059,6 +1115,230 @@ const FormDesigner = {
                 pages: this.state.currentForm.pages
             }
         };
+    },
+
+    // Render table column editor
+    renderTableEditor(widget) {
+        const columns = widget.spec.columns || [];
+
+        let columnsHtml = '';
+        columns.forEach((col, index) => {
+            columnsHtml += `
+                <div class="border p-2 mb-2 bg-light" data-column-index="${index}">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong>Column ${index + 1}</strong>
+                        <button class="btn btn-sm btn-danger btn-delete-column" data-index="${index}">×</button>
+                    </div>
+                    <input type="text" class="form-control form-control-sm mb-1" placeholder="Name" value="${col.name || ''}" data-column-prop="${index}.name">
+                    <input type="text" class="form-control form-control-sm mb-1" placeholder="Label" value="${col.label || ''}" data-column-prop="${index}.label">
+                    <select class="form-control form-control-sm" data-column-prop="${index}.type">
+                        <option value="string" ${col.type === 'string' ? 'selected' : ''}>String</option>
+                        <option value="integer" ${col.type === 'integer' ? 'selected' : ''}>Integer</option>
+                        <option value="decimal" ${col.type === 'decimal' ? 'selected' : ''}>Decimal</option>
+                        <option value="date" ${col.type === 'date' ? 'selected' : ''}>Date</option>
+                        <option value="checkbox" ${col.type === 'checkbox' ? 'selected' : ''}>Checkbox</option>
+                    </select>
+                </div>
+            `;
+        });
+
+        return `
+            <div class="form-group">
+                <label>Table Columns</label>
+                <div id="table-columns-list">
+                    ${columnsHtml}
+                </div>
+                <button type="button" class="btn btn-sm btn-primary mt-2" id="btn-add-column">+ Add Column</button>
+            </div>
+        `;
+    },
+
+    // Render options editor for radio/checkbox groups
+    renderOptionsEditor(widget) {
+        const options = widget.spec.options || [];
+
+        let optionsHtml = '';
+        options.forEach((opt, index) => {
+            const label = opt.label || opt;
+            const value = opt.value || opt;
+            optionsHtml += `
+                <div class="border p-2 mb-2 bg-light" data-option-index="${index}">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong>Option ${index + 1}</strong>
+                        <button class="btn btn-sm btn-danger btn-delete-option" data-index="${index}">×</button>
+                    </div>
+                    <input type="text" class="form-control form-control-sm mb-1" placeholder="Label" value="${label}" data-option-prop="${index}.label">
+                    <input type="text" class="form-control form-control-sm" placeholder="Value" value="${value}" data-option-prop="${index}.value">
+                </div>
+            `;
+        });
+
+        return `
+            <div class="form-group">
+                <label>Options</label>
+                <div id="options-list">
+                    ${optionsHtml}
+                </div>
+                <button type="button" class="btn btn-sm btn-primary mt-2" id="btn-add-option">+ Add Option</button>
+            </div>
+            <div class="form-group">
+                <label>Orientation</label>
+                <select class="form-control" data-prop="spec.orientation">
+                    <option value="horizontal" ${widget.spec.orientation === 'horizontal' ? 'selected' : ''}>Horizontal</option>
+                    <option value="vertical" ${widget.spec.orientation === 'vertical' ? 'selected' : ''}>Vertical</option>
+                </select>
+            </div>
+        `;
+    },
+
+    // Render FormHeader editor
+    renderFormHeaderEditor(widget) {
+        const spec = widget.spec || {};
+        return `
+            <div class="form-group">
+                <label>Document No</label>
+                <input type="text" class="form-control" value="${spec.document_no || ''}" data-prop="spec.document_no">
+            </div>
+            <div class="form-group">
+                <label>Revision No</label>
+                <input type="text" class="form-control" value="${spec.revision_no || ''}" data-prop="spec.revision_no">
+            </div>
+            <div class="form-group">
+                <label>Effective Date</label>
+                <input type="text" class="form-control" value="${spec.effective_date || ''}" data-prop="spec.effective_date">
+            </div>
+            <div class="form-group">
+                <label>Organization</label>
+                <input type="text" class="form-control" value="${spec.organization || ''}" data-prop="spec.organization">
+            </div>
+        `;
+    },
+
+    // Render Signature editor
+    renderSignatureEditor(widget) {
+        const spec = widget.spec || {};
+        return `
+            <div class="form-group">
+                <label>Role</label>
+                <input type="text" class="form-control" value="${spec.role || ''}" data-prop="spec.role" placeholder="e.g., Reviewed by (GMT-1)">
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" ${spec.show_designation ? 'checked' : ''} data-prop="spec.show_designation">
+                <label class="form-check-label">Show Designation</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" ${spec.show_date ? 'checked' : ''} data-prop="spec.show_date">
+                <label class="form-check-label">Show Date</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" ${spec.require_signature_image ? 'checked' : ''} data-prop="spec.require_signature_image">
+                <label class="form-check-label">Require Signature Image</label>
+            </div>
+        `;
+    },
+
+    // Render Notes editor
+    renderNotesEditor(widget) {
+        const spec = widget.spec || {};
+        return `
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" class="form-control" value="${spec.title || ''}" data-prop="spec.title">
+            </div>
+            <div class="form-group">
+                <label>Content</label>
+                <textarea class="form-control" rows="4" data-prop="spec.content">${spec.content || ''}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Style</label>
+                <select class="form-control" data-prop="spec.style">
+                    <option value="info" ${spec.style === 'info' ? 'selected' : ''}>Info</option>
+                    <option value="warning" ${spec.style === 'warning' ? 'selected' : ''}>Warning</option>
+                    <option value="note" ${spec.style === 'note' ? 'selected' : ''}>Note</option>
+                </select>
+            </div>
+        `;
+    },
+
+    // Add table column
+    addTableColumn(widgetId) {
+        const widget = this.findWidget(widgetId);
+        if (!widget || !widget.spec.columns) {
+            widget.spec.columns = [];
+        }
+
+        widget.spec.columns.push({
+            name: `column_${widget.spec.columns.length + 1}`,
+            label: `Column ${widget.spec.columns.length + 1}`,
+            type: 'string'
+        });
+
+        this.state.isDirty = true;
+        this.showWidgetProperties(widgetId);
+    },
+
+    // Delete table column
+    deleteTableColumn(widgetId, index) {
+        const widget = this.findWidget(widgetId);
+        if (!widget || !widget.spec.columns) return;
+
+        widget.spec.columns.splice(index, 1);
+        this.state.isDirty = true;
+        this.showWidgetProperties(widgetId);
+    },
+
+    // Update column property
+    updateColumnProperty(widgetId, propPath, value) {
+        const widget = this.findWidget(widgetId);
+        if (!widget) return;
+
+        const [index, prop] = propPath.split('.');
+        const columnIndex = parseInt(index);
+
+        if (widget.spec.columns && widget.spec.columns[columnIndex]) {
+            widget.spec.columns[columnIndex][prop] = value;
+            this.state.isDirty = true;
+        }
+    },
+
+    // Add option to radio/checkbox group
+    addOption(widgetId) {
+        const widget = this.findWidget(widgetId);
+        if (!widget || !widget.spec.options) {
+            widget.spec.options = [];
+        }
+
+        widget.spec.options.push({
+            label: `Option ${widget.spec.options.length + 1}`,
+            value: `option_${widget.spec.options.length + 1}`
+        });
+
+        this.state.isDirty = true;
+        this.showWidgetProperties(widgetId);
+    },
+
+    // Delete option
+    deleteOption(widgetId, index) {
+        const widget = this.findWidget(widgetId);
+        if (!widget || !widget.spec.options) return;
+
+        widget.spec.options.splice(index, 1);
+        this.state.isDirty = true;
+        this.showWidgetProperties(widgetId);
+    },
+
+    // Update option property
+    updateOptionProperty(widgetId, propPath, value) {
+        const widget = this.findWidget(widgetId);
+        if (!widget) return;
+
+        const [index, prop] = propPath.split('.');
+        const optionIndex = parseInt(index);
+
+        if (widget.spec.options && widget.spec.options[optionIndex]) {
+            widget.spec.options[optionIndex][prop] = value;
+            this.state.isDirty = true;
+        }
     },
 
     // Show status message
