@@ -112,9 +112,7 @@ app.MapGet("/", () => Results.Redirect("/index.html"));
 
 app.Run();
 
-// Make Program class accessible for integration tests
-public partial class Program { }
-
+// Helper method for database provider configuration
 static void ConfigureDatabaseProvider(DbContextOptionsBuilder options, string provider, string connectionString)
 {
     if (string.IsNullOrWhiteSpace(provider))
@@ -140,3 +138,6 @@ static void ConfigureDatabaseProvider(DbContextOptionsBuilder options, string pr
             throw new InvalidOperationException($"Unsupported database provider '{provider}'.");
     }
 }
+
+// Make Program class accessible for integration tests
+public partial class Program { }
