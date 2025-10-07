@@ -36,7 +36,7 @@ public class SqlServerTestFixtureTests : IClassFixture<SqlServerTestFixture>
     {
         // Assert
         _fixture.ConnectionString.Should().NotBeNullOrEmpty("Connection string should be provided");
-        _fixture.ConnectionString.Should().Contain("SqlServer", "Connection should be for SQL Server");
+        _fixture.ConnectionString.Should().Contain("Server=", "Connection should have Server parameter");
         _fixture.ConnectionString.Should().Contain(_fixture.DatabaseName, "Connection string should reference test database");
     }
 
