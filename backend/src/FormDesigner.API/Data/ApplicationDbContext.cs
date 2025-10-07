@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using FormDesigner.API.Models.Entities;
 
 namespace FormDesigner.API.Data;
@@ -33,6 +34,10 @@ public class ApplicationDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        var providerName = Database.ProviderName ?? string.Empty;
+        var isNpgsql = providerName.Equals("Npgsql.EntityFrameworkCore.PostgreSQL", StringComparison.OrdinalIgnoreCase);
+        var isSqlServer = providerName.Equals("Microsoft.EntityFrameworkCore.SqlServer", StringComparison.OrdinalIgnoreCase);
+
         // Configure FormDefinitionEntity
         modelBuilder.Entity<FormDefinitionEntity>(entity =>
         {
@@ -50,21 +55,22 @@ public class ApplicationDbContext : DbContext
                 .IsRequired()
                 .HasMaxLength(50);
 
-            // Store as JSONB in PostgreSQL
-            entity.Property(e => e.DslJson)
+            var dslJsonProperty = entity.Property(e => e.DslJson)
                 .HasColumnName("dsl_json")
-                .HasColumnType("jsonb")
                 .IsRequired();
+
+            ConfigureJsonColumn(dslJsonProperty, isNpgsql, isSqlServer);
 
             entity.Property(e => e.IsCommitted)
                 .HasColumnName("is_committed")
                 .IsRequired()
                 .HasDefaultValue(false);
 
-            entity.Property(e => e.CreatedAt)
+            var createdAtProperty = entity.Property(e => e.CreatedAt)
                 .HasColumnName("created_at")
-                .IsRequired()
-                .HasDefaultValueSql("NOW()");
+                .IsRequired();
+
+            ConfigureUtcNowDefault(createdAtProperty, isNpgsql, isSqlServer);
 
             entity.Property(e => e.UpdatedAt)
                 .HasColumnName("updated_at");
@@ -84,10 +90,13 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(e => e.CreatedAt)
                 .HasDatabaseName("ix_form_definitions_created_at");
 
-            // GIN index on JSONB for efficient querying
-            entity.HasIndex(e => e.DslJson)
-                .HasDatabaseName("ix_form_definitions_dsl_json")
-                .HasMethod("gin");
+            // Provider-specific JSON index support
+            if (isNpgsql)
+            {
+                entity.HasIndex(e => e.DslJson)
+                    .HasDatabaseName("ix_form_definitions_dsl_json")
+                    .HasMethod("gin");
+            }
         });
 
         // Configure FormInstanceEntity
@@ -112,15 +121,16 @@ public class ApplicationDbContext : DbContext
                 .HasMaxLength(20)
                 .HasDefaultValue("draft");
 
-            // Store as JSONB in PostgreSQL
-            entity.Property(e => e.DataJson)
-                .HasColumnName("data_json")
-                .HasColumnType("jsonb");
+            var dataJsonProperty = entity.Property(e => e.DataJson)
+                .HasColumnName("data_json");
 
-            entity.Property(e => e.CreatedAt)
+            ConfigureJsonColumn(dataJsonProperty, isNpgsql, isSqlServer);
+
+            var instanceCreatedAtProperty = entity.Property(e => e.CreatedAt)
                 .HasColumnName("created_at")
-                .IsRequired()
-                .HasDefaultValueSql("NOW()");
+                .IsRequired();
+
+            ConfigureUtcNowDefault(instanceCreatedAtProperty, isNpgsql, isSqlServer);
 
             entity.Property(e => e.SubmittedAt)
                 .HasColumnName("submitted_at");
@@ -148,10 +158,12 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(e => e.CreatedAt)
                 .HasDatabaseName("ix_form_instances_created_at");
 
-            // GIN index on JSONB
-            entity.HasIndex(e => e.DataJson)
-                .HasDatabaseName("ix_form_instances_data_json")
-                .HasMethod("gin");
+            if (isNpgsql)
+            {
+                entity.HasIndex(e => e.DataJson)
+                    .HasDatabaseName("ix_form_instances_data_json")
+                    .HasMethod("gin");
+            }
         });
 
         // Configure TemporaryStateEntity
@@ -169,16 +181,17 @@ public class ApplicationDbContext : DbContext
                 .HasColumnName("instance_id")
                 .IsRequired();
 
-            // Store as JSONB in PostgreSQL
-            entity.Property(e => e.DataJson)
+            var temporaryJsonProperty = entity.Property(e => e.DataJson)
                 .HasColumnName("data_json")
-                .HasColumnType("jsonb")
                 .IsRequired();
 
-            entity.Property(e => e.SavedAt)
+            ConfigureJsonColumn(temporaryJsonProperty, isNpgsql, isSqlServer);
+
+            var savedAtProperty = entity.Property(e => e.SavedAt)
                 .HasColumnName("saved_at")
-                .IsRequired()
-                .HasDefaultValueSql("NOW()");
+                .IsRequired();
+
+            ConfigureUtcNowDefault(savedAtProperty, isNpgsql, isSqlServer);
 
             entity.Property(e => e.UserId)
                 .HasColumnName("user_id")
@@ -200,5 +213,29 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(e => e.UserId)
                 .HasDatabaseName("ix_temporary_states_user_id");
         });
+
+        static void ConfigureJsonColumn(PropertyBuilder<string> propertyBuilder, bool isNpgsql, bool isSqlServer)
+        {
+            if (isNpgsql)
+            {
+                propertyBuilder.HasColumnType("jsonb");
+            }
+            else if (isSqlServer)
+            {
+                propertyBuilder.HasColumnType("nvarchar(max)");
+            }
+        }
+
+        static void ConfigureUtcNowDefault(PropertyBuilder<DateTime> propertyBuilder, bool isNpgsql, bool isSqlServer)
+        {
+            if (isNpgsql)
+            {
+                propertyBuilder.HasDefaultValueSql("NOW()");
+            }
+            else if (isSqlServer)
+            {
+                propertyBuilder.HasDefaultValueSql("SYSUTCDATETIME()");
+            }
+        }
     }
 }

@@ -21,15 +21,28 @@ builder.Services.AddControllers()
     });
 
 // Configure Database
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+var databaseProvider = builder.Configuration["Database:Provider"]
+    ?? builder.Configuration["DatabaseProvider"]
+    ?? "Postgres";
+
+var connectionStringName = builder.Configuration["Database:ConnectionStringName"] ?? "FormDesignerDb";
+var connectionString = builder.Configuration.GetConnectionString(connectionStringName);
+
+if (string.IsNullOrWhiteSpace(connectionString))
 {
-    var connectionString = builder.Configuration.GetConnectionString("FormDesignerDb");
-    options.UseNpgsql(connectionString);
+    throw new InvalidOperationException($"Connection string '{connectionStringName}' not found.");
+}
+
+builder.Services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+{
+    ConfigureDatabaseProvider(options, databaseProvider, connectionString);
 
     // Enable sensitive data logging in development
-    if (builder.Environment.IsDevelopment())
+    var environment = serviceProvider.GetRequiredService<IHostEnvironment>();
+    if (environment.IsDevelopment())
     {
         options.EnableSensitiveDataLogging();
+        options.EnableDetailedErrors();
     }
 });
 
@@ -101,3 +114,29 @@ app.Run();
 
 // Make Program class accessible for integration tests
 public partial class Program { }
+
+static void ConfigureDatabaseProvider(DbContextOptionsBuilder options, string provider, string connectionString)
+{
+    if (string.IsNullOrWhiteSpace(provider))
+    {
+        throw new InvalidOperationException("Database provider is not configured.");
+    }
+
+    switch (provider.Trim().ToLowerInvariant())
+    {
+        case "postgres":
+        case "postgresql":
+        case "npgsql":
+            options.UseNpgsql(connectionString);
+            break;
+        case "sqlserver":
+        case "mssql":
+            options.UseSqlServer(connectionString, sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure();
+            });
+            break;
+        default:
+            throw new InvalidOperationException($"Unsupported database provider '{provider}'.");
+    }
+}

@@ -2,48 +2,71 @@
 
 This directory contains database setup scripts for the FormDesigner application.
 
-## Prerequisites
+## Supported Databases
 
-- PostgreSQL 15+ installed and running
+- PostgreSQL 15+
+- Microsoft SQL Server 2019+
+
+## PostgreSQL Setup
+
+### Prerequisites
+
+- PostgreSQL engine running (the project defaults to `localhost:5400`)
 - `psql` command-line tool available
 
-## Quick Start
+### Steps
 
-### 1. Create Database
+1. **Create database**
 
-```bash
-# Create the formflow database
-createdb formflow
-```
+   ```bash
+   createdb formflow
+   ```
 
-### 2. Run Setup Script
+2. **Apply schema**
 
-```bash
-# Run setup script
-psql -d formflow -f setup.sql
-```
+   ```bash
+   psql -d formflow -f setup.sql
+   ```
 
-### 3. Verify Setup
+3. **Verify**
 
-```bash
-# Connect to database
-psql -d formflow
+   ```bash
+   psql -d formflow
+   \dt
+   \d form_definitions
+   \di
+   ```
 
-# List tables
-\dt
+## SQL Server Setup
 
-# Describe form_definitions table
-\d form_definitions
+### Prerequisites
 
-# Check indexes
-\di
-```
+- SQL Server instance (local or container)
+- `sqlcmd` or Azure Data Studio for running scripts
+
+### Steps
+
+1. **Create database & schema**
+
+   ```bash
+   sqlcmd -S localhost,1433 -U sa -P "YourStrong!Passw0rd" -i setup.sqlserver.sql
+   ```
+
+2. **Verify**
+
+   ```sql
+   USE formflow;
+   GO
+   SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_CATALOG = 'formflow';
+   GO
+   ```
 
 ## Connection Strings
 
 Configured in `appsettings.json`:
 
-- **Production & Development**: `Host=localhost;Port=5400;Database=formflow;Username=postgres;Password=orion@123`
+- **Default (PostgreSQL)**: `Host=localhost;Port=5400;Database=formflow;Username=postgres;Password=orion@123`
+- **SQL Server example**: `Server=localhost,1433;Database=formflow;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True`
 
 ## Schema
 
