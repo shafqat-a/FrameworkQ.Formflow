@@ -1,0 +1,159 @@
+{
+  "form": {
+    "id": "table-test-form",
+    "title": "Table Widget Test Form for SQL Generation",
+    "version": "1.0",
+    "pages": [
+      {
+        "id": "page-1",
+        "title": "Data Tables",
+        "sections": [
+          {
+            "id": "section-1",
+            "title": "Inventory Table",
+            "widgets": [
+              {
+                "type": "table",
+                "id": "inventory_table",
+                "title": "Product Inventory",
+                "table": {
+                  "columns": [
+                    {
+                      "name": "product_code",
+                      "label": "Product Code",
+                      "type": "string",
+                      "required": true
+                    },
+                    {
+                      "name": "product_name",
+                      "label": "Product Name",
+                      "type": "string",
+                      "required": true
+                    },
+                    {
+                      "name": "description",
+                      "label": "Description",
+                      "type": "text"
+                    },
+                    {
+                      "name": "quantity",
+                      "label": "Quantity",
+                      "type": "integer",
+                      "default": 0,
+                      "required": true
+                    },
+                    {
+                      "name": "unit_price",
+                      "label": "Unit Price",
+                      "type": "decimal",
+                      "required": true
+                    },
+                    {
+                      "name": "total_value",
+                      "label": "Total Value",
+                      "type": "decimal",
+                      "formula": "quantity * unit_price"
+                    },
+                    {
+                      "name": "in_stock",
+                      "label": "In Stock",
+                      "type": "bool",
+                      "default": true
+                    },
+                    {
+                      "name": "reorder_date",
+                      "label": "Reorder Date",
+                      "type": "date"
+                    },
+                    {
+                      "name": "last_updated",
+                      "label": "Last Updated",
+                      "type": "datetime"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "section-2",
+            "title": "Employee Records",
+            "widgets": [
+              {
+                "type": "table",
+                "id": "employee_table",
+                "title": "Employee Information",
+                "table": {
+                  "columns": [
+                    {
+                      "name": "employee_id",
+                      "label": "Employee ID",
+                      "type": "string",
+                      "required": true
+                    },
+                    {
+                      "name": "full_name",
+                      "label": "Full Name",
+                      "type": "string",
+                      "required": true
+                    },
+                    {
+                      "name": "department",
+                      "label": "Department",
+                      "type": "enum"
+                    },
+                    {
+                      "name": "hire_date",
+                      "label": "Hire Date",
+                      "type": "date",
+                      "required": true
+                    },
+                    {
+                      "name": "salary",
+                      "label": "Salary",
+                      "type": "decimal"
+                    },
+                    {
+                      "name": "is_active",
+                      "label": "Active",
+                      "type": "bool",
+                      "default": true
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "section-3",
+            "title": "Grid Widget Test",
+            "widgets": [
+              {
+                "type": "grid",
+                "id": "rating_grid",
+                "title": "Performance Rating Grid",
+                "grid": {
+                  "rows": [
+                    {"key": "quality", "label": "Quality of Work"},
+                    {"key": "timeliness", "label": "Timeliness"},
+                    {"key": "collaboration", "label": "Collaboration"},
+                    {"key": "innovation", "label": "Innovation"}
+                  ],
+                  "columns": [
+                    {"key": "q1", "label": "Q1"},
+                    {"key": "q2", "label": "Q2"},
+                    {"key": "q3", "label": "Q3"},
+                    {"key": "q4", "label": "Q4"}
+                  ],
+                  "cell": {
+                    "type": "integer"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

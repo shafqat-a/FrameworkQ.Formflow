@@ -1,0 +1,181 @@
+{
+  "form": {
+    "id": "complex-test-form",
+    "title": "Complex Test Form with Special Characters",
+    "version": "1.0",
+    "metadata": {
+      "author": "Test User",
+      "description": "Testing unicode: 你好世界, emoji: 🎉🚀💻, quotes: \"quoted text\", apostrophe: it's here, newline:\nNext line",
+      "tags": ["test", "complex", "unicode", "special-chars"],
+      "nested": {
+        "level1": {
+          "level2": {
+            "level3": "Deep nesting test"
+          }
+        }
+      }
+    },
+    "pages": [
+      {
+        "id": "page-1",
+        "title": "Page with Special Characters: <>&\"'",
+        "sections": [
+          {
+            "id": "section-1",
+            "title": "Section 1: Тестовые данные (Russian)",
+            "widgets": [
+              {
+                "type": "field",
+                "id": "unicode_name",
+                "label": "Name in Multiple Languages: 名前 (Japanese), 이름 (Korean)",
+                "field_type": "text",
+                "placeholder": "Enter: François, José, Müller"
+              },
+              {
+                "type": "field",
+                "id": "special_text",
+                "label": "Special Characters Test",
+                "field_type": "textarea",
+                "default": "Testing: \t Tab, \n Newline, \" Quote, \\ Backslash"
+              },
+              {
+                "type": "select",
+                "id": "language",
+                "label": "Select Language",
+                "options": [
+                  {"value": "en", "label": "English"},
+                  {"value": "es", "label": "Español"},
+                  {"value": "fr", "label": "Français"},
+                  {"value": "de", "label": "Deutsch"},
+                  {"value": "ja", "label": "日本語"},
+                  {"value": "zh", "label": "中文"},
+                  {"value": "ar", "label": "العربية"},
+                  {"value": "ru", "label": "Русский"}
+                ]
+              }
+            ]
+          },
+          {
+            "id": "section-2",
+            "title": "Nested Structures & Arrays",
+            "widgets": [
+              {
+                "type": "group",
+                "id": "address_group",
+                "title": "Address Information",
+                "widgets": [
+                  {
+                    "type": "field",
+                    "id": "street",
+                    "label": "Street: O'Connor St, Müller-Straße",
+                    "field_type": "text"
+                  },
+                  {
+                    "type": "field",
+                    "id": "city",
+                    "label": "City",
+                    "field_type": "text",
+                    "default": "São Paulo"
+                  },
+                  {
+                    "type": "field",
+                    "id": "postal_code",
+                    "label": "Postal Code",
+                    "field_type": "text",
+                    "pattern": "[0-9]{5}(-[0-9]{4})?"
+                  }
+                ]
+              },
+              {
+                "type": "table",
+                "id": "items_table",
+                "title": "Items with Special Names",
+                "table": {
+                  "columns": [
+                    {
+                      "name": "item_name",
+                      "label": "Item (允许中文)",
+                      "type": "string"
+                    },
+                    {
+                      "name": "description",
+                      "label": "Description",
+                      "type": "text"
+                    },
+                    {
+                      "name": "price",
+                      "label": "Price (€/$)",
+                      "type": "decimal"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "section-3",
+            "title": "Math & Symbols: ∑∫∏√∞±≠≈",
+            "widgets": [
+              {
+                "type": "field",
+                "id": "formula_test",
+                "label": "Formula: y = mx + b, x² + y² = r²",
+                "field_type": "text",
+                "placeholder": "Enter mathematical expression"
+              },
+              {
+                "type": "checklist",
+                "id": "symbol_checklist",
+                "title": "Symbol Checklist",
+                "items": [
+                  {"id": "item1", "label": "✓ Check mark"},
+                  {"id": "item2", "label": "✗ Cross mark"},
+                  {"id": "item3", "label": "★ Star symbol"},
+                  {"id": "item4", "label": "© Copyright"},
+                  {"id": "item5", "label": "® Registered"},
+                  {"id": "item6", "label": "™ Trademark"}
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "page-2",
+        "title": "Page 2: More Complex Scenarios",
+        "sections": [
+          {
+            "id": "section-4",
+            "title": "Emojis & Modern Unicode",
+            "widgets": [
+              {
+                "type": "field",
+                "id": "emoji_field",
+                "label": "Emoji Test 😀😃😄😁",
+                "field_type": "text",
+                "default": "Default value with emoji: 🎨🎭🎪🎬"
+              },
+              {
+                "type": "notes",
+                "id": "emoji_notes",
+                "content": "# Emoji Categories\n\n* Faces: 😀😃😄😁😆\n* Animals: 🐶🐱🐭🐹🐰\n* Food: 🍕🍔🍟🌭🍿\n* Travel: ✈️🚂🚗🚕🚙\n* Symbols: ❤️💔💯✨🔥"
+              },
+              {
+                "type": "radiogroup",
+                "id": "mood_select",
+                "label": "Select Your Mood",
+                "options": [
+                  {"value": "happy", "label": "😊 Happy"},
+                  {"value": "sad", "label": "😢 Sad"},
+                  {"value": "excited", "label": "🎉 Excited"},
+                  {"value": "tired", "label": "😴 Tired"},
+                  {"value": "angry", "label": "😠 Angry"}
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

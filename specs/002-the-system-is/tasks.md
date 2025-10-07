@@ -11,7 +11,7 @@ Total tasks: 15 | P1: 9 | P2: 4 | P3: 2
 
 ## Phase 1: Test Infrastructure (P1)
 
-### [WIP] T001: Create SQL Server Test Fixture
+### [X] T001: Create SQL Server Test Fixture
 **GitHub Issue**: [#18](https://github.com/shafqat-a/FrameworkQ.Formflow/issues/18)
 **Priority**: P1
 **Depends on**: None
@@ -436,7 +436,7 @@ dotnet ef database update
 
 ---
 
-### T015: Create Test Data Files
+### [WIP] T015: Create Test Data Files
 **GitHub Issue**: [#32](https://github.com/shafqat-a/FrameworkQ.Formflow/issues/32)
 **Priority**: P3
 **Depends on**: None

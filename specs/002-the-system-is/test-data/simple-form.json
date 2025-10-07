@@ -1,0 +1,42 @@
+{
+  "form": {
+    "id": "simple-test-form",
+    "title": "Simple Test Form",
+    "version": "1.0",
+    "pages": [
+      {
+        "id": "page-1",
+        "title": "Basic Information",
+        "sections": [
+          {
+            "id": "section-1",
+            "title": "Personal Details",
+            "widgets": [
+              {
+                "type": "field",
+                "id": "full_name",
+                "label": "Full Name",
+                "field_type": "text",
+                "required": true
+              },
+              {
+                "type": "field",
+                "id": "email",
+                "label": "Email Address",
+                "field_type": "email",
+                "required": true
+              },
+              {
+                "type": "field",
+                "id": "age",
+                "label": "Age",
+                "field_type": "number",
+                "required": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
