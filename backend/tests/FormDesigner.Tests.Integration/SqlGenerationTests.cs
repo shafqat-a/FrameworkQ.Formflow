@@ -44,7 +44,7 @@ public class SqlGenerationTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Data Table",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -53,7 +53,7 @@ public class SqlGenerationTests : IClassFixture<IntegrationTestFixture>
                                         title = "Data Table",
                                         table = new
                                         {
-                                            columns = new[]
+                                            columns = new object[]
                                             {
                                                 new { name = "item_name", label = "Item", type = "string" },
                                                 new { name = "quantity", label = "Quantity", type = "integer" },
@@ -127,7 +127,7 @@ public class SqlGenerationTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Section 1",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -135,7 +135,7 @@ public class SqlGenerationTests : IClassFixture<IntegrationTestFixture>
                                         id = "type-test-table",
                                         table = new
                                         {
-                                            columns = new[]
+                                            columns = new object[]
                                             {
                                                 new { name = "text_col", label = "Text", type = "string" },
                                                 new { name = "long_text", label = "Long Text", type = "text" },
@@ -169,7 +169,7 @@ public class SqlGenerationTests : IClassFixture<IntegrationTestFixture>
         lowerSql.Should().ContainAny("varchar", "text");
 
         // Numeric types
-        lowerSql.Should().Contain("integer").Or.Contain("int");
+        lowerSql.Should().ContainAny("integer", "int");
         lowerSql.Should().ContainAny("numeric", "decimal");
 
         // Date/time types
@@ -205,7 +205,7 @@ public class SqlGenerationTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Section 1",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -213,7 +213,7 @@ public class SqlGenerationTests : IClassFixture<IntegrationTestFixture>
                                         id = "computed-table",
                                         table = new
                                         {
-                                            columns = new[]
+                                            columns = new object[]
                                             {
                                                 new { name = "quantity", label = "Quantity", type = "integer" },
                                                 new { name = "unit_price", label = "Unit Price", type = "decimal" },
@@ -275,7 +275,7 @@ public class SqlGenerationTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Section 1",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -283,7 +283,7 @@ public class SqlGenerationTests : IClassFixture<IntegrationTestFixture>
                                         id = "indexed-table",
                                         table = new
                                         {
-                                            columns = new[]
+                                            columns = new object[]
                                             {
                                                 new { name = "id", label = "ID", type = "string" },
                                                 new { name = "status", label = "Status", type = "string" }
@@ -336,7 +336,7 @@ public class SqlGenerationTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Section 1",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -344,7 +344,7 @@ public class SqlGenerationTests : IClassFixture<IntegrationTestFixture>
                                         id = "table-1",
                                         table = new
                                         {
-                                            columns = new[] { new { name = "col1", label = "Col1", type = "string" } }
+                                            columns = new object[] { new { name = "col1", label = "Col1", type = "string" } }
                                         }
                                     },
                                     new
@@ -353,7 +353,7 @@ public class SqlGenerationTests : IClassFixture<IntegrationTestFixture>
                                         id = "table-2",
                                         table = new
                                         {
-                                            columns = new[] { new { name = "col2", label = "Col2", type = "integer" } }
+                                            columns = new object[] { new { name = "col2", label = "Col2", type = "integer" } }
                                         }
                                     }
                                 }

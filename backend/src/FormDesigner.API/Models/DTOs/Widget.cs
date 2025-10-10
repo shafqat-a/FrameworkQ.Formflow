@@ -64,14 +64,23 @@ public class Widget
     public FieldSpec? Field { get; set; }
 
     /// <summary>
-    /// Group fields (when type = "group")
+    /// Group specification (when type = "group")
+    /// </summary>
+    [JsonPropertyName("group")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public GroupSpec? Group { get; set; }
+
+    /// <summary>
+    /// DEPRECATED: Group fields (when type = "group") - Use Group.Fields instead
+    /// Kept for backward compatibility
     /// </summary>
     [JsonPropertyName("fields")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<FieldSpec>? Fields { get; set; }
 
     /// <summary>
-    /// Group layout configuration (when type = "group")
+    /// DEPRECATED: Group layout configuration (when type = "group") - Use Group.Layout instead
+    /// Kept for backward compatibility
     /// </summary>
     [JsonPropertyName("layout")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

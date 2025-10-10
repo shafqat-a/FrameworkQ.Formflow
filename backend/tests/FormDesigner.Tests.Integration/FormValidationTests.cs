@@ -123,7 +123,7 @@ public class FormValidationTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Section 1",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -147,7 +147,7 @@ public class FormValidationTests : IClassFixture<IntegrationTestFixture>
 
         var error = await response.Content.ReadFromJsonAsync<ValidationErrorDto>();
         error.Should().NotBeNull();
-        error!.Errors.Should().ContainKey(key => key.Contains("widget") && key.Contains("id"));
+        error!.Errors.Keys.Should().Contain(key => key.Contains("widget") && key.Contains("id"));
     }
 
     [Fact]
@@ -210,7 +210,7 @@ public class FormValidationTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Section 1",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -240,7 +240,7 @@ public class FormValidationTests : IClassFixture<IntegrationTestFixture>
 
         var error = await response.Content.ReadFromJsonAsync<ValidationErrorDto>();
         error.Should().NotBeNull();
-        error!.Errors.Should().ContainKey(key =>
+        error!.Errors.Keys.Should().Contain(key =>
             key.Contains("widget") && (key.Contains("duplicate") || key.Contains("unique")));
     }
 
@@ -330,7 +330,7 @@ public class FormValidationTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Section 1",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -384,7 +384,7 @@ public class FormValidationTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Section 1",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {

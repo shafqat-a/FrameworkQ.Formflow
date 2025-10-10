@@ -28,13 +28,15 @@ Full-stack visual form designer for creating complex enterprise forms with drag-
 - ✅ Design Mode - Drag-drop form builder
 - ✅ Runtime Mode - Data entry and submission
 - ✅ YAML Import/Export (DSL v0.1)
-- ✅ SQL DDL Generation (PostgreSQL)
+- ✅ SQL DDL Generation (PostgreSQL + SQL Server)
 - ✅ Formula Calculations (9 functions)
 - ✅ Validation (FluentValidation + client-side)
-- ✅ Preview Mode
+- ✅ **Enhanced Preview Mode** - High-fidelity preview with functional add/remove buttons ⭐
 - ✅ Enterprise Styling (print-ready)
 
 ## Quick Start
+
+### PostgreSQL (Default)
 
 ```bash
 # Database setup
@@ -48,9 +50,31 @@ dotnet ef database update
 dotnet run
 ```
 
+### SQL Server (Alternative)
+
+```bash
+# Start SQL Server (Docker)
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+  -p 1433:1433 --name sqlserver-formflow \
+  -d mcr.microsoft.com/mssql/server:2019-latest
+
+# Configure provider
+export Database__Provider=SqlServer
+export ConnectionStrings__FormDesignerDb="Server=localhost,1433;Database=formflow;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True"
+
+# Run migrations
+cd backend/src/FormDesigner.API
+dotnet ef database update
+
+# Start application
+dotnet run
+```
+
 **Access:**
 - **Designer**: http://localhost:5099/index.html
 - **Runtime**: http://localhost:5099/runtime.html
+
+See [Database README](backend/database/README.md) for detailed configuration.
 
 ## Sample Forms
 
@@ -86,7 +110,8 @@ curl -X POST http://localhost:5099/api/import/yaml \
 ## Technology Stack
 
 - ASP.NET Core 8.0 / .NET 10.0
-- Entity Framework Core 8.0 + PostgreSQL
+- Entity Framework Core 8.0
+- **Database**: PostgreSQL 15+ (default) or SQL Server 2019+
 - jQuery 3.7, Bootstrap 5
 - FluentValidation 11.3
 - YamlDotNet 13.7

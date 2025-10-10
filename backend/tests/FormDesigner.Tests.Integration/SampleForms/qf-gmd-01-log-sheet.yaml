@@ -1,19 +1,18 @@
 form:
   id: qf-gmd-01
-  title: Log Sheet
+  title: Grid Sub-Station Transformer Log Sheet
   version: "00"
-
   pages:
     - id: page-1
-      title: Log Sheet - First Shift
+      title: Transformer Log Sheet - Page 1
       sections:
+        # Standard QMS Header
         - id: section-header
           title: Form Header
           widgets:
             - type: formheader
               id: header-widget
-              title: Document Header
-              formheader:
+              form_header:
                 document_no: QF-GMD-01
                 revision_no: "00"
                 effective_date: 15/02/07
@@ -22,41 +21,281 @@ form:
                 form_title: LOG SHEET
                 category: Quality Forms
 
-        - id: section-substation-info
-          title: Sub-Station Information
+        # Organization and Division Title
+        - id: section-org-title
+          title: Organization
+          widgets:
+            - type: notes
+              id: org-title
+              notes:
+                style: info
+                title: ""
+                content: |
+                  Power Grid company of Bangladesh Limited
+                  Grid Maintenance Division : .................. Grid Sub-Station
+
+        # Commissioning Date and Date/Day (simple fields)
+        - id: section-dates
+          title: Date Information
           widgets:
             - type: field
               id: commissioning-date
-              title: Commissioning Date
               field:
-                type: date
-
-            - type: field
-              id: grid-substation
-              title: Grid Sub-Station
-              field:
+                name: commissioning-date
+                label: "Commissioning Date:"
                 type: text
-                required: true
+                placeholder: "......-....-........"
 
             - type: field
-              id: date-field
-              title: Date
+              id: date
               field:
+                name: date
+                label: "Date"
                 type: date
                 required: true
 
             - type: field
-              id: day-field
-              title: Day
+              id: day
               field:
+                name: day
+                label: "Day:"
                 type: text
 
-        - id: section-transformer-readings
-          title: Transformer Readings
+        # Main Transformer Readings Table (7:00-14:00) - WITH PRE-POPULATED TIMES
+        - id: section-transformer-readings-7-14
+          title: Transformer Readings (7:00-14:00)
           widgets:
             - type: table
-              id: transformer-readings
-              title: Transformer TR # Hourly Readings
+              id: transformer-7-14
+              table:
+                row_mode: finite
+                min: 8
+                max: 8
+                allow_add_rows: false
+                allow_delete_rows: false
+                columns:
+                  # Time column
+                  - name: time
+                    label: Time
+                    type: string
+                    readonly: true
+                    default: "7:00"
+
+                  # Transformer 1 - kV side
+                  - name: tr1_kv_pf
+                    label: PF
+                    type: decimal
+                  - name: tr1_kv_mw
+                    label: MW
+                    type: decimal
+                  - name: tr1_kv_mvar
+                    label: MVAR
+                    type: decimal
+                  - name: tr1_kv_ampere_ryb
+                    label: Ampere R Y B
+                    type: text
+                  - name: tr1_kv_tap
+                    label: TAP
+                    type: string
+                  - name: tr1_kv_temp
+                    label: Temp
+                    type: decimal
+
+                  # Transformer 1 - Winding Oil
+                  - name: tr1_oil_temp
+                    label: Temp
+                    type: decimal
+                  - name: tr1_oil_pf
+                    label: PF
+                    type: decimal
+
+                  # Transformer 1 - LV side
+                  - name: tr1_lv_kv
+                    label: kV
+                    type: decimal
+                  - name: tr1_lv_mw
+                    label: MW
+                    type: decimal
+                  - name: tr1_lv_mvar
+                    label: MVAR
+                    type: decimal
+                  - name: tr1_lv_ampere
+                    label: Ampere
+                    type: text
+                  - name: tr1_lv_tap
+                    label: TAP
+                    type: string
+                  - name: tr1_lv_temp
+                    label: Temp
+                    type: decimal
+
+                  # Transformer 1 - Oil (second)
+                  - name: tr1_oil2_pf
+                    label: PF
+                    type: decimal
+                  - name: tr1_oil2_temp
+                    label: Temp
+                    type: decimal
+
+                  # Transformer 2 - kV side (similar structure)
+                  - name: tr2_kv_pf
+                    label: PF
+                    type: decimal
+                  - name: tr2_kv_mw
+                    label: MW
+                    type: decimal
+                  - name: tr2_kv_mvar
+                    label: MVAR
+                    type: decimal
+                  - name: tr2_kv_ampere
+                    label: Ampere
+                    type: text
+                  - name: tr2_kv_tap
+                    label: TAP
+                    type: string
+                  - name: tr2_kv_temp
+                    label: Temp
+                    type: decimal
+
+                  # Transformer 2 - Oil
+                  - name: tr2_oil_temp
+                    label: Temp
+                    type: decimal
+                  - name: tr2_oil_pf
+                    label: PF
+                    type: decimal
+
+                  # Transformer 2 - LV side
+                  - name: tr2_lv_kv
+                    label: kV
+                    type: decimal
+                  - name: tr2_lv_mw
+                    label: MW
+                    type: decimal
+                  - name: tr2_lv_mvar
+                    label: MVAR
+                    type: decimal
+                  - name: tr2_lv_ampere
+                    label: Ampere
+                    type: text
+                  - name: tr2_lv_tap
+                    label: TAP
+                    type: string
+                  - name: tr2_lv_temp
+                    label: Temp
+                    type: decimal
+
+                  # Transformer 2 - Oil (second)
+                  - name: tr2_oil2_pf
+                    label: PF
+                    type: decimal
+                  - name: tr2_oil2_temp
+                    label: Temp
+                    type: decimal
+
+                  # Transformer Breaker
+                  - name: breaker_kv1
+                    label: kV
+                    type: decimal
+                  - name: breaker_b1
+                    label: B
+                    type: string
+                  - name: breaker_kv2
+                    label: kV
+                    type: decimal
+                  - name: breaker_b2
+                    label: B
+                    type: string
+                  - name: breaker_bus_voltage
+                    label: bus Voltage
+                    type: decimal
+
+                  # Totals
+                  - name: kv_total
+                    label: kV Total
+                    type: decimal
+                  - name: mw_total
+                    label: MW
+                    type: decimal
+
+                # Pre-populated hourly rows for Shift A
+                initial_rows:
+                  - time: "7:00"
+                  - time: "8:00"
+                  - time: "9:00"
+                  - time: "10:00"
+                  - time: "11:00"
+                  - time: "12:00"
+                  - time: "13:00"
+                  - time: "14:00"
+
+        # OLTC Counter readings and Signatures (layout table with colspan)
+        - id: section-oltc-signatures-a
+          title: OLTC and Signatures
+          widgets:
+            - type: group
+              id: oltc-sig-layout
+              group:
+                layout:
+                  style: table
+                  columns: 4
+                  rows: 2
+                  bordered: true
+                  compact: true
+                cells:
+                  - row: 0
+                    col: 0
+                    field:
+                      name: oltc-label
+                      label: "OLTC counter readings:"
+                      type: text
+                      readonly: true
+                  - row: 0
+                    col: 1
+                    field:
+                      name: oltc-12hr-1
+                      label: "At 12.00 Hr."
+                      type: decimal
+                  - row: 0
+                    col: 2
+                    field:
+                      name: oltc-12hr-2
+                      label: "At 12.00 Hr."
+                      type: decimal
+                  - row: 0
+                    col: 3
+                    field:
+                      name: oltc-12hr-3
+                      label: "At 12.00 Hr."
+                      type: decimal
+
+                  - row: 1
+                    col: 0
+                    field:
+                      name: energy-label
+                      label: "Energy readings:"
+                      type: text
+                      readonly: true
+                  - row: 1
+                    col: 1
+                    colspan: 2
+                    field:
+                      name: sig-shift-a
+                      label: "Signature of Shift-in-Charge (A shift):"
+                      type: text
+                  - row: 1
+                    col: 3
+                    field:
+                      name: sig-shift-b
+                      label: "Signature of Shift-in-Charge (B shift):"
+                      type: text
+
+        # Transformer Readings (15:00-22:00) - WITH PRE-POPULATED TIMES
+        - id: section-transformer-readings-15-22
+          title: Transformer Readings (15:00-22:00)
+          widgets:
+            - type: table
+              id: transformer-15-22
               table:
                 row_mode: finite
                 min: 8
@@ -67,122 +306,76 @@ form:
                   - name: time
                     label: Time
                     type: string
-                    required: true
-
-                  - name: kv_bus
-                    label: kV bus
-                    type: decimal
-
-                  - name: pf
+                    readonly: true
+                  - name: tr1_kv_pf
                     label: PF
                     type: decimal
-
-                  - name: mw
+                  - name: tr1_kv_mw
                     label: MW
                     type: decimal
-
-                  - name: mvar
+                  - name: tr1_kv_mvar
                     label: MVAR
                     type: decimal
-
-                  - name: ampere
+                  - name: tr1_kv_ampere
                     label: Ampere
-                    type: decimal
-
-                  - name: tap
+                    type: text
+                  - name: tr1_kv_tap
                     label: TAP
                     type: string
-
-                  - name: temp
+                  - name: tr1_kv_temp
                     label: Temp
                     type: decimal
-
-                  - name: winding_oil_temp
-                    label: Winding Oil Temp
+                  - name: kv_total
+                    label: kV Total
+                    type: decimal
+                  - name: mw_total
+                    label: MW
                     type: decimal
 
-                  - name: kv_side_pf
-                    label: kV side PF
-                    type: decimal
+                # Pre-populated hourly rows for Shift B
+                initial_rows:
+                  - time: "15:00"
+                  - time: "16:00"
+                  - time: "17:00"
+                  - time: "18:00"
+                  - time: "19:00"
+                  - time: "20:00"
+                  - time: "21:00"
+                  - time: "22:00"
 
-                  - name: kv_side_mw
-                    label: kV side MW
-                    type: decimal
-
-                  - name: kv_side_mvar
-                    label: kV side MVAR
-                    type: decimal
-
-                  - name: kv_side_ampere
-                    label: kV side Ampere
-                    type: decimal
-
-                  - name: kv_side_temp
-                    label: kV side Temp
-                    type: decimal
-
-                  - name: kv_side_winding_oil
-                    label: kV side Winding Oil Temp
-                    type: decimal
-
-        - id: section-oltc-readings
-          title: OLTC Counter & Energy Readings
+        # Shift B/C Signatures
+        - id: section-shift-bc-sigs
+          title: Shift Signatures
           widgets:
-            - type: field
-              id: oltc-12hr
-              title: OLTC counter readings At 12.00 Hr
-              field:
-                type: integer
+            - type: group
+              id: shift-bc-layout
+              group:
+                layout:
+                  style: table
+                  columns: 2
+                  rows: 1
+                  bordered: false
+                  compact: false
+                cells:
+                  - row: 0
+                    col: 0
+                    field:
+                      name: sig-shift-b-2
+                      label: "Signature of Shift-in-Charge (B shift):"
+                      type: text
+                  - row: 0
+                    col: 1
+                    field:
+                      name: sig-shift-c
+                      label: "Signature of Shift-in-Charge (C shift):"
+                      type: text
 
-            - type: field
-              id: energy-12hr
-              title: Energy readings At 12.00 Hr
-              field:
-                type: decimal
-
-        - id: section-shift-signature
-          title: Shift Signature
-          widgets:
-            - type: signature
-              id: sig-shift-a
-              title: Signature of Shift-in-Charge (A shift)
-              signature:
-                role: Signature of Shift-in-Charge (A shift)
-                show_designation: false
-                show_date: false
-
-            - type: signature
-              id: sig-shift-b
-              title: Signature of Shift-in-Charge (B shift)
-              signature:
-                role: Signature of Shift-in-Charge (B shift)
-                show_designation: false
-                show_date: false
-
-    - id: page-2
-      title: Log Sheet - Second & Third Shift
-      sections:
-        - id: section-header-p2
-          title: Form Header
-          widgets:
-            - type: formheader
-              id: header-widget-p2
-              title: Document Header Page 2
-              formheader:
-                document_no: QF-GMD-01
-                revision_no: "00"
-                effective_date: 15/02/07
-                page_number: 2 of 2
-                organization: POWER GRID COMPANY OF BANGLADESH LTD.
-                form_title: LOG SHEET
-                category: Quality Forms
-
-        - id: section-readings-afternoon
-          title: Afternoon Shift Readings (15:00-22:00)
+        # Transformer Readings (23:00-6:00) - WITH PRE-POPULATED TIMES
+        - id: section-transformer-readings-23-6
+          title: Transformer Readings (23:00-6:00)
           widgets:
             - type: table
-              id: readings-afternoon
-              title: Hourly Readings - Afternoon
+              id: transformer-23-6
               table:
                 row_mode: finite
                 min: 8
@@ -190,115 +383,102 @@ form:
                 allow_add_rows: false
                 allow_delete_rows: false
                 columns:
-                  - name: time_aft
+                  - name: time
                     label: Time
                     type: string
-                    required: true
-
-                  - name: kv_aft
-                    label: kV
+                    readonly: true
+                  - name: tr1_kv_pf
+                    label: PF
                     type: decimal
-
-                  - name: mw_aft
+                  - name: tr1_kv_mw
+                    label: MW
+                    type: decimal
+                  - name: tr1_kv_mvar
+                    label: MVAR
+                    type: decimal
+                  - name: tr1_kv_ampere
+                    label: Ampere
+                    type: text
+                  - name: kv_total
+                    label: kV Total
+                    type: decimal
+                  - name: mw_total
                     label: MW
                     type: decimal
 
-                  - name: mvar_aft
-                    label: MVAR
-                    type: decimal
+                # Pre-populated hourly rows for Shift C
+                initial_rows:
+                  - time: "23:00"
+                  - time: "24:00"
+                  - time: "1:00"
+                  - time: "2:00"
+                  - time: "3:00"
+                  - time: "4:00"
+                  - time: "5:00"
+                  - time: "6:00"
 
-                  - name: amp_aft
-                    label: Ampere
-                    type: decimal
-
-        - id: section-readings-night
-          title: Night Shift Readings (23:00-06:00)
+        # Station Signatures (layout table with colspan)
+        - id: section-station-approval
+          title: Station Approval
           widgets:
-            - type: table
-              id: readings-night
-              title: Hourly Readings - Night
-              table:
-                row_mode: finite
-                min: 8
-                max: 8
-                allow_add_rows: false
-                allow_delete_rows: false
-                columns:
-                  - name: time_night
-                    label: Time
-                    type: string
-                    required: true
+            - type: group
+              id: station-approval-layout
+              group:
+                layout:
+                  style: table
+                  columns: 2
+                  rows: 2
+                  bordered: false
+                  compact: false
+                cells:
+                  - row: 0
+                    col: 0
+                    field:
+                      name: sig-shift-c-final
+                      label: "Signature of Shift-in-Charge (C shift):"
+                      type: text
 
-                  - name: kv_night
-                    label: kV
-                    type: decimal
+                  - row: 0
+                    col: 1
+                    field:
+                      name: sig-shift-a-final
+                      label: "Signature of Shift-in-Charge (A shift):"
+                      type: text
 
-                  - name: mw_night
-                    label: MW
-                    type: decimal
+                  - row: 1
+                    col: 0
+                    colspan: 2
+                    align: center
+                    field:
+                      name: sig-station
 
-                  - name: mvar_night
-                    label: MVAR
-                    type: decimal
+                      label: "Signature of Station in Charge:\nAssistant Manager / Deputy Manager"
+                      type: text
 
-                  - name: amp_night
-                    label: Ampere
-                    type: decimal
-
-        - id: section-final-signatures
-          title: Final Signatures
+        # Final Management Approval
+        - id: section-management-approval
+          title: Management Approval
           widgets:
-            - type: signature
-              id: sig-shift-b-final
-              title: Signature of Shift-in-Charge (B shift)
-              signature:
-                role: Signature of Shift-in-Charge (B shift)
-                show_designation: false
-                show_date: false
+            - type: group
+              id: management-layout
+              group:
+                layout:
+                  style: table
+                  columns: 2
+                  rows: 1
+                  bordered: false
+                  compact: false
+                cells:
+                  - row: 0
+                    col: 0
+                    field:
+                      name: reviewed-gmt1
+                      label: "Reviewed By (GMT-1):"
+                      type: text
 
-            - type: signature
-              id: sig-shift-c
-              title: Signature of Shift-in-Charge (C shift)
-              signature:
-                role: Signature of Shift-in-Charge (C shift)
-                show_designation: false
-                show_date: false
-
-            - type: signature
-              id: sig-station-charge
-              title: Signature of Station in Charge
-              signature:
-                role: Signature of Station in Charge
-                designation_label: Assistant Manager / Deputy Manager
-                show_designation: true
-                show_date: false
-
-        - id: section-final-approval
-          title: Final Approval
-          widgets:
-            - type: signature
-              id: sig-reviewed-final
-              title: Reviewed By (GMT-1)
-              signature:
-                role: Reviewed By (GMT-1)
-                show_designation: false
-                show_date: true
-
-            - type: signature
-              id: sig-approved-final
-              title: Approved By (DT)
-              signature:
-                role: Approved By (DT)
-                show_designation: false
-                show_date: true
-
-  metadata:
-    organization: Power Grid Company of Bangladesh
-    document_number: QF-GMD-01
-    effective_date: 2007-02-15
-    revision: "00"
-    tags:
-      - log-sheet
-      - hourly-readings
-      - transformer
-      - quality-management
+                  - row: 0
+                    col: 1
+                    field:
+                      name: approved-dt
+                      label: "Approved By (DT):"
+                      type: text

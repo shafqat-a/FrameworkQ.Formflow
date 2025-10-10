@@ -14,7 +14,7 @@ public class EnhancedFeaturesTests : IClassFixture<IntegrationTestFixture>
 
     public EnhancedFeaturesTests(IntegrationTestFixture fixture)
     {
-        _client = fixture.CreateClient();
+        _client = fixture.Client;
     }
 
     [Fact]

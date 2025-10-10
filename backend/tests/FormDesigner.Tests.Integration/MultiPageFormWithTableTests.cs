@@ -43,7 +43,7 @@ public class MultiPageFormWithTableTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Basic Details",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -83,7 +83,7 @@ public class MultiPageFormWithTableTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-2",
                                 title = "Items Table",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -93,7 +93,7 @@ public class MultiPageFormWithTableTests : IClassFixture<IntegrationTestFixture>
                                         table = new
                                         {
                                             row_mode = "infinite",
-                                            columns = new[]
+                                            columns = new object[]
                                             {
                                                 new
                                                 {
@@ -181,7 +181,7 @@ public class MultiPageFormWithTableTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Data",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -189,7 +189,7 @@ public class MultiPageFormWithTableTests : IClassFixture<IntegrationTestFixture>
                                         id = "data-table",
                                         table = new
                                         {
-                                            columns = new[]
+                                            columns = new object[]
                                             {
                                                 new { name = "text_col", label = "Text", type = "string" },
                                                 new { name = "int_col", label = "Integer", type = "integer" },
@@ -245,7 +245,7 @@ public class MultiPageFormWithTableTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Constrained Table",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -257,7 +257,7 @@ public class MultiPageFormWithTableTests : IClassFixture<IntegrationTestFixture>
                                             min = 1,
                                             max = 10,
                                             row_key = new[] { "item_id" },
-                                            columns = new[]
+                                            columns = new object[]
                                             {
                                                 new { name = "item_id", label = "ID", type = "string", required = true },
                                                 new { name = "value", label = "Value", type = "integer" }

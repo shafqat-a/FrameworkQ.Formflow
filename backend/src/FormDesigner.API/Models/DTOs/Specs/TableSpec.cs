@@ -97,6 +97,14 @@ public class TableSpec
     /// </summary>
     [JsonPropertyName("allow_delete_rows")]
     public bool AllowDeleteRows { get; set; } = true;
+
+    /// <summary>
+    /// Initial rows data to pre-populate the table (array of objects with column values)
+    /// Example: [{"time": "7:00", "value": "10"}, {"time": "8:00", "value": "20"}]
+    /// </summary>
+    [JsonPropertyName("initial_rows")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<Dictionary<string, object>>? InitialRows { get; set; }
 }
 
 /// <summary>

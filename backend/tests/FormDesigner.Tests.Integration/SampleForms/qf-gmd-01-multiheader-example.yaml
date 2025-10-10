@@ -1,0 +1,144 @@
+form:
+  id: qf-gmd-01-multiheader
+  title: Transformer Log Sheet with Multi-Row Headers
+  version: "00"
+  pages:
+    - id: page-1
+      title: Transformer Readings
+      sections:
+        - id: section-header
+          title: Form Header
+          widgets:
+            - type: formheader
+              id: header-widget
+              form_header:
+                document_no: QF-GMD-01
+                revision_no: "00"
+                effective_date: 15/02/07
+                page_number: 1 of 1
+                organization: POWER GRID COMPANY OF BANGLADESH LTD.
+                form_title: TRANSFORMER LOG SHEET - MULTI-ROW HEADERS DEMO
+                category: Quality Forms
+
+        # Transformer Readings with Multi-Row Headers
+        - id: section-transformer-readings
+          title: Transformer Readings (Shift A)
+          widgets:
+            - type: table
+              id: transformer-readings
+              table:
+                row_mode: finite
+                min: 8
+                max: 8
+                allow_add_rows: false
+                allow_delete_rows: false
+
+                # Multi-row headers demonstrating Ampere R/Y/B sub-columns
+                multi_row_headers:
+                  # Header Row 1: Column groups
+                  - cells:
+                      - label: Time
+                        colspan: 1
+                        rowspan: 2
+                      - label: Voltage
+                        colspan: 1
+                        rowspan: 2
+                      - label: Power
+                        colspan: 3
+                        rowspan: 1
+                      - label: "Ampere (3-Phase)"
+                        colspan: 3
+                        rowspan: 1
+                      - label: Temperature
+                        colspan: 1
+                        rowspan: 2
+                      - label: Totals
+                        colspan: 2
+                        rowspan: 2
+
+                  # Header Row 2: Sub-columns
+                  - cells:
+                      # Power sub-columns
+                      - label: PF
+                      - label: MW
+                      - label: MVAR
+                      # Ampere sub-columns (R, Y, B phases)
+                      - label: R
+                      - label: Y
+                      - label: B
+
+                # Actual data columns (must match header structure)
+                columns:
+                  - name: time
+                    label: Time
+                    type: string
+                    readonly: true
+                  # TR1 kV side
+                  - name: tr1_kv_pf
+                    label: PF
+                    type: decimal
+                  - name: tr1_kv_mw
+                    label: MW
+                    type: decimal
+                  - name: tr1_kv_mvar
+                    label: MVAR
+                    type: decimal
+                  - name: tr1_kv_ampere_r
+                    label: R
+                    type: decimal
+                  - name: tr1_kv_ampere_y
+                    label: Y
+                    type: decimal
+                  - name: tr1_kv_ampere_b
+                    label: B
+                    type: decimal
+                  # TR1 LV side
+                  - name: tr1_lv_kv
+                    label: kV
+                    type: decimal
+                  - name: tr1_lv_mw
+                    label: MW
+                    type: decimal
+                  - name: tr1_lv_mvar
+                    label: MVAR
+                    type: decimal
+                  - name: tr1_lv_ampere
+                    label: Ampere
+                    type: decimal
+                  # TR2 kV side (abbreviated)
+                  - name: tr2_kv_pf
+                    label: PF
+                    type: decimal
+                  - name: tr2_kv_mw
+                    label: MW
+                    type: decimal
+                  - name: tr2_kv_ampere_r
+                    label: R
+                    type: decimal
+                  - name: tr2_kv_ampere_y
+                    label: Y
+                    type: decimal
+                  - name: tr2_kv_ampere_b
+                    label: B
+                    type: decimal
+                  - name: tr2_temp
+                    label: Temp
+                    type: decimal
+                  # Totals
+                  - name: kv_total
+                    label: kV Total
+                    type: decimal
+                  - name: mw_total
+                    label: MW Total
+                    type: decimal
+
+                # Pre-populated hourly rows
+                initial_rows:
+                  - time: "7:00"
+                  - time: "8:00"
+                  - time: "9:00"
+                  - time: "10:00"
+                  - time: "11:00"
+                  - time: "12:00"
+                  - time: "13:00"
+                  - time: "14:00"

@@ -44,7 +44,8 @@ const WidgetConverter = {
                         max_rows: widget.table.max || null,
                         multi_row_headers: widget.table.multi_row_headers || null,
                         merged_cells: widget.table.merged_cells || null,
-                        row_mode: widget.table.row_mode || 'finite'
+                        row_mode: widget.table.row_mode || 'finite',
+                        initial_rows: widget.table.initial_rows || null
                     };
                 }
                 break;
@@ -67,9 +68,21 @@ const WidgetConverter = {
                 break;
 
             case 'group':
-                internal.spec = {
-                    widgets: widget.fields || []
-                };
+                // Support new group spec format with layout and cells
+                if (widget.group) {
+                    internal.spec = {
+                        fields: widget.group.fields || [],
+                        layout: widget.group.layout || null,
+                        cells: widget.group.cells || null,
+                        widgets: widget.group.fields || []  // Alias for backward compat
+                    };
+                } else {
+                    // Backward compatibility: old format with widget.fields directly
+                    internal.spec = {
+                        widgets: widget.fields || [],
+                        fields: widget.fields || []
+                    };
+                }
                 break;
 
             case 'formheader':
@@ -153,7 +166,8 @@ const WidgetConverter = {
                     allow_add_rows: widget.spec.allow_add_rows !== false,
                     allow_delete_rows: widget.spec.allow_delete_rows !== false,
                     multi_row_headers: widget.spec.multi_row_headers || null,
-                    merged_cells: widget.spec.merged_cells || null
+                    merged_cells: widget.spec.merged_cells || null,
+                    initial_rows: widget.spec.initial_rows || null
                 };
                 break;
 
@@ -171,8 +185,18 @@ const WidgetConverter = {
                 break;
 
             case 'group':
-                dto.fields = widget.spec.widgets || [];
-                dto.layout = widget.spec.layout || null;
+                // Support new group spec format
+                if (widget.spec.layout || widget.spec.cells) {
+                    dto.group = {
+                        fields: widget.spec.fields || widget.spec.widgets || [],
+                        layout: widget.spec.layout || null,
+                        cells: widget.spec.cells || null
+                    };
+                } else {
+                    // Backward compatibility: old format
+                    dto.fields = widget.spec.widgets || widget.spec.fields || [];
+                    dto.layout = widget.spec.layout || null;
+                }
                 break;
 
             case 'formheader':

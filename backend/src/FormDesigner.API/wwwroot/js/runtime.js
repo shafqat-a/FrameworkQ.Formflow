@@ -273,27 +273,29 @@ const FormRuntime = {
 
     // Render field widget
     renderFieldWidget(widget) {
-        const requiredClass = widget.required ? 'required' : '';
-        const requiredAttr = widget.required ? 'required' : '';
-        const fieldType = widget.spec?.type || 'text';
-        const placeholder = widget.spec?.placeholder || '';
-        const defaultValue = widget.spec?.default_value || '';
+        const field = widget.field || widget.spec || {};
+        const requiredClass = field.required ? 'required' : '';
+        const requiredAttr = field.required ? 'required' : '';
+        const fieldType = field.type || 'text';
+        const placeholder = field.placeholder || '';
+        const defaultValue = field.default_value || '';
+        const label = field.label || widget.label || 'Field';
 
         let inputHtml = '';
 
         if (fieldType === 'textarea') {
-            inputHtml = `<textarea class="form-control" id="${widget.id}" name="${widget.id}" placeholder="${placeholder}" ${requiredAttr}>${defaultValue}</textarea>`;
+            inputHtml = `<textarea class="form-control" id="${widget.id}" name="${field.name || widget.id}" placeholder="${placeholder}" ${requiredAttr}>${defaultValue}</textarea>`;
         } else if (fieldType === 'select') {
-            const options = widget.spec?.options || [];
+            const options = field.options || [];
             const optionsHtml = options.map(opt => `<option value="${opt.value || opt}">${opt.label || opt}</option>`).join('');
-            inputHtml = `<select class="form-control" id="${widget.id}" name="${widget.id}" ${requiredAttr}><option value="">-- Select --</option>${optionsHtml}</select>`;
+            inputHtml = `<select class="form-control" id="${widget.id}" name="${field.name || widget.id}" ${requiredAttr}><option value="">-- Select --</option>${optionsHtml}</select>`;
         } else {
-            inputHtml = `<input type="${fieldType}" class="form-control" id="${widget.id}" name="${widget.id}" placeholder="${placeholder}" value="${defaultValue}" ${requiredAttr}>`;
+            inputHtml = `<input type="${fieldType}" class="form-control" id="${widget.id}" name="${field.name || widget.id}" placeholder="${placeholder}" value="${defaultValue}" ${requiredAttr}>`;
         }
 
         return `
             <div class="runtime-widget runtime-field ${requiredClass}" data-widget-id="${widget.id}">
-                <label for="${widget.id}">${widget.label}</label>
+                <label for="${widget.id}">${label}</label>
                 ${inputHtml}
             </div>
         `;
@@ -301,23 +303,81 @@ const FormRuntime = {
 
     // Render table widget
     renderTableWidget(widget) {
-        const columns = widget.spec?.columns || [];
-        const allowAddRows = widget.spec?.allow_add_rows !== false;
+        const table = widget.table || widget.spec || {};
+        const columns = table.columns || [];
+        const allowAddRows = table.allow_add_rows !== false;
+        const allowDeleteRows = table.allow_delete_rows !== false;
+        const initialRows = table.initial_rows || [];
+        const multiRowHeaders = table.multi_row_headers || null;
+        const label = widget.label || 'Table';
 
-        let headerHtml = columns.map(col => `<th>${col.label || col.name}</th>`).join('');
-        if (allowAddRows) {
-            headerHtml += '<th style="width: 80px;">Actions</th>';
+        // Generate header HTML
+        let headerHtml = '';
+        if (multiRowHeaders && multiRowHeaders.length > 0) {
+            // Multi-row headers
+            multiRowHeaders.forEach(headerRow => {
+                let rowHtml = '<tr>';
+                headerRow.cells.forEach(cell => {
+                    const colspan = cell.colspan > 1 ? `colspan="${cell.colspan}"` : '';
+                    const rowspan = cell.rowspan > 1 ? `rowspan="${cell.rowspan}"` : '';
+                    const cssClass = cell.css_class || '';
+                    rowHtml += `<th ${colspan} ${rowspan} class="${cssClass}">${cell.label}</th>`;
+                });
+                rowHtml += '</tr>';
+                headerHtml += rowHtml;
+            });
+        } else {
+            // Simple single-row header
+            let rowHtml = '<tr>';
+            rowHtml += columns.map(col => `<th>${col.label || col.name}</th>`).join('');
+            if (allowAddRows || allowDeleteRows) {
+                rowHtml += '<th style="width: 80px;">Actions</th>';
+            }
+            rowHtml += '</tr>';
+            headerHtml = rowHtml;
+        }
+
+        // Generate initial rows HTML
+        let rowsHtml = '';
+        if (initialRows.length > 0) {
+            initialRows.forEach((rowData, index) => {
+                rowsHtml += '<tr>';
+                columns.forEach(col => {
+                    const value = rowData[col.name] || '';
+                    const readonly = col.readonly ? 'readonly' : '';
+                    const fieldType = col.type === 'integer' || col.type === 'decimal' ? 'number' :
+                                     col.type === 'date' ? 'date' :
+                                     col.type === 'time' ? 'time' : 'text';
+
+                    rowsHtml += `
+                        <td>
+                            <input type="${fieldType}"
+                                   class="form-control form-control-sm"
+                                   name="${col.name}_${index}"
+                                   value="${value}"
+                                   ${readonly}>
+                        </td>
+                    `;
+                });
+
+                if (allowDeleteRows) {
+                    rowsHtml += `<td><button class="btn btn-sm btn-danger btn-delete-row">Remove</button></td>`;
+                } else if (allowAddRows) {
+                    rowsHtml += `<td></td>`;
+                }
+                rowsHtml += '</tr>';
+            });
         }
 
         return `
             <div class="runtime-widget runtime-table" data-widget-id="${widget.id}">
-                <h5>${widget.label}</h5>
-                <table class="table">
+                <h5>${label}</h5>
+                <table class="table table-bordered">
                     <thead>
-                        <tr>${headerHtml}</tr>
+                        ${headerHtml}
                     </thead>
                     <tbody data-table-id="${widget.id}">
-                        <!-- Rows will be added dynamically -->
+                        ${rowsHtml}
                     </tbody>
                 </table>
                 ${allowAddRows ? `<button class="btn btn-sm btn-primary btn-add-row" data-table-id="${widget.id}">+ Add Row</button>` : ''}
@@ -361,8 +421,22 @@ const FormRuntime = {
 
     // Render group widget
     renderGroupWidget(widget) {
-        const childWidgets = widget.spec?.widgets || [];
+        const spec = widget.spec || {};
+        const layout = spec.layout || null;
+        const cells = spec.cells || null;
 
+        // If layout table with cells, render as bordered table
+        if (layout && layout.style === 'table' && cells) {
+            return this.renderGroupAsLayoutTable(widget, layout, cells);
+        }
+
+        // If layout table with fields (auto-flow), render in grid
+        if (layout && layout.style === 'table' && spec.fields) {
+            return this.renderGroupAsAutoLayoutTable(widget, layout, spec.fields);
+        }
+
+        // Default: render as simple group
+        const childWidgets = spec.widgets || [];
         return `
             <div class="runtime-widget runtime-group" data-widget-id="${widget.id}">
                 <h4 class="runtime-group-title">${widget.label}</h4>
@@ -371,9 +445,152 @@ const FormRuntime = {
         `;
     },
 
+    // Render group as layout table with explicit cell positioning
+    renderGroupAsLayoutTable(widget, layout, cells) {
+        const rows = layout.rows || this.calculateMaxRow(cells) + 1;
+        const columns = layout.columns || this.calculateMaxCol(cells) + 1;
+        const bordered = layout.bordered !== false;
+        const compact = layout.compact || false;
+
+        // Create 2D grid to track cell spans
+        const grid = Array(rows).fill(null).map(() => Array(columns).fill(null));
+
+        // Mark cells that are occupied by spans
+        cells.forEach(cell => {
+            for (let r = cell.row; r < cell.row + (cell.rowspan || 1); r++) {
+                for (let c = cell.col; c < cell.col + (cell.colspan || 1); c++) {
+                    if (grid[r] && grid[r][c] !== undefined) {
+                        grid[r][c] = cell;
+                    }
+                }
+            }
+        });
+
+        let tableHtml = `<table class="table ${bordered ? 'table-bordered' : ''} ${compact ? 'table-sm' : ''} runtime-layout-table">`;
+
+        for (let r = 0; r < rows; r++) {
+            tableHtml += '<tr>';
+            for (let c = 0; c < columns; c++) {
+                // Skip if this cell is part of a span from another cell
+                const cellData = this.findCellAt(cells, r, c);
+                if (cellData && cellData.row === r && cellData.col === c) {
+                    // This is the origin cell
+                    const rowspanAttr = cellData.rowspan > 1 ? `rowspan="${cellData.rowspan}"` : '';
+                    const colspanAttr = cellData.colspan > 1 ? `colspan="${cellData.colspan}"` : '';
+                    const alignClass = cellData.align ? `text-${cellData.align}` : '';
+                    const valignClass = cellData.valign ? `align-${cellData.valign}` : '';
+                    const cssClass = cellData.css_class || '';
+
+                    tableHtml += `<td ${rowspanAttr} ${colspanAttr} class="${alignClass} ${valignClass} ${cssClass}">`;
+                    tableHtml += this.renderFieldInCell(cellData.field, widget.id);
+                    tableHtml += '</td>';
+                } else if (!this.isCellSpanned(cells, r, c)) {
+                    // Empty cell
+                    tableHtml += '<td></td>';
+                }
+            }
+            tableHtml += '</tr>';
+        }
+
+        tableHtml += '</table>';
+
+        return `
+            <div class="runtime-widget runtime-group runtime-group-table" data-widget-id="${widget.id}">
+                ${widget.label ? `<h4 class="runtime-group-title">${widget.label}</h4>` : ''}
+                ${tableHtml}
+            </div>
+        `;
+    },
+
+    // Render group as auto-layout table (fields flow into columns)
+    renderGroupAsAutoLayoutTable(widget, layout, fields) {
+        const columns = layout.columns || 2;
+        const bordered = layout.bordered !== false;
+        const compact = layout.compact || false;
+        const rows = Math.ceil(fields.length / columns);
+
+        let tableHtml = `<table class="table ${bordered ? 'table-bordered' : ''} ${compact ? 'table-sm' : ''} runtime-layout-table">`;
+
+        for (let r = 0; r < rows; r++) {
+            tableHtml += '<tr>';
+            for (let c = 0; c < columns; c++) {
+                const fieldIndex = r * columns + c;
+                if (fieldIndex < fields.length) {
+                    const field = fields[fieldIndex];
+                    tableHtml += '<td>';
+                    tableHtml += this.renderFieldInCell(field, widget.id);
+                    tableHtml += '</td>';
+                } else {
+                    tableHtml += '<td></td>';
+                }
+            }
+            tableHtml += '</tr>';
+        }
+
+        tableHtml += '</table>';
+
+        return `
+            <div class="runtime-widget runtime-group runtime-group-table" data-widget-id="${widget.id}">
+                ${widget.label ? `<h4 class="runtime-group-title">${widget.label}</h4>` : ''}
+                ${tableHtml}
+            </div>
+        `;
+    },
+
+    // Render a field inside a table cell
+    renderFieldInCell(field, widgetId) {
+        const fieldId = `${widgetId}_${field.name}`;
+        const fieldType = field.type || 'text';
+        const label = field.label || field.name;
+        const required = field.required ? ' <span class="text-danger">*</span>' : '';
+        const placeholder = field.placeholder || '';
+
+        let inputHtml = '';
+        if (fieldType === 'textarea') {
+            inputHtml = `<textarea class="form-control form-control-sm" id="${fieldId}" name="${field.name}" placeholder="${placeholder}"></textarea>`;
+        } else if (fieldType === 'select') {
+            const options = field.enum || [];
+            const optionsHtml = options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+            inputHtml = `<select class="form-control form-control-sm" id="${fieldId}" name="${field.name}"><option value="">-- Select --</option>${optionsHtml}</select>`;
+        } else {
+            inputHtml = `<input type="${fieldType}" class="form-control form-control-sm" id="${fieldId}" name="${field.name}" placeholder="${placeholder}">`;
+        }
+
+        return `
+            <div class="layout-cell-field">
+                <strong>${label}${required}</strong>
+                ${inputHtml}
+            </div>
+        `;
+    },
+
+    // Helper: Find cell at specific row/col
+    findCellAt(cells, row, col) {
+        return cells.find(cell => cell.row === row && cell.col === col);
+    },
+
+    // Helper: Check if cell is spanned by another cell
+    isCellSpanned(cells, row, col) {
+        return cells.some(cell => {
+            return row >= cell.row && row < cell.row + (cell.rowspan || 1) &&
+                   col >= cell.col && col < cell.col + (cell.colspan || 1) &&
+                   !(cell.row === row && cell.col === col);  // Not the origin cell
+        });
+    },
+
+    // Helper: Calculate max row from cells
+    calculateMaxRow(cells) {
+        return Math.max(...cells.map(c => c.row + (c.rowspan || 1) - 1));
+    },
+
+    // Helper: Calculate max column from cells
+    calculateMaxCol(cells) {
+        return Math.max(...cells.map(c => c.col + (c.colspan || 1) - 1));
+    },
+
     // Render FormHeader widget
     renderFormHeaderWidget(widget) {
-        const spec = widget.spec || {};
+        const spec = widget.formheader || widget.form_header || widget.spec || {};
         return `
             <div class="runtime-widget runtime-form-header mb-4" data-widget-id="${widget.id}">
                 <table class="table table-bordered table-sm">
@@ -401,7 +618,7 @@ const FormRuntime = {
 
     // Render Signature widget
     renderSignatureWidget(widget) {
-        const spec = widget.spec || {};
+        const spec = widget.signature || widget.spec || {};
         return `
             <div class="runtime-widget runtime-signature mb-3" data-widget-id="${widget.id}">
                 <div class="border p-3 bg-light">
@@ -441,13 +658,15 @@ const FormRuntime = {
 
     // Render Notes widget
     renderNotesWidget(widget) {
-        const spec = widget.spec || {};
-        const styleClass = spec.style === 'warning' ? 'alert-warning' : spec.style === 'note' ? 'alert-info' : 'alert-primary';
+        const spec = widget.notes || widget.spec || {};
+        const styleClass = spec.style === 'warning' ? 'alert-warning' : spec.style === 'info' ? 'alert-info' : 'alert-primary';
+        const content = spec.content || '';
+        const formattedContent = content.replace(/\n/g, '<br>');
         return `
             <div class="runtime-widget runtime-notes mb-3" data-widget-id="${widget.id}">
                 <div class="alert ${styleClass}">
                     ${spec.title ? `<h6 class="alert-heading">${spec.title}</h6>` : ''}
-                    <div>${spec.content || ''}</div>
+                    <div>${formattedContent}</div>
                 </div>
             </div>
         `;

@@ -50,7 +50,7 @@ public class YamlExportValidationTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Test Section",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -124,7 +124,7 @@ public class YamlExportValidationTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Section 1",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -133,7 +133,7 @@ public class YamlExportValidationTests : IClassFixture<IntegrationTestFixture>
                                         table = new
                                         {
                                             row_mode = "infinite",
-                                            columns = new[]
+                                            columns = new object[]
                                             {
                                                 new { name = "column_name", label = "Column", type = "string" }
                                             }
@@ -183,7 +183,7 @@ public class YamlExportValidationTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section_1",  // Valid (underscore)
                                 title = "Section",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -243,7 +243,7 @@ public class YamlExportValidationTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Section 1",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {

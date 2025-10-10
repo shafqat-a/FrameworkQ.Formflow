@@ -43,7 +43,7 @@ public class DeleteOperationsTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Section 1",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -87,7 +87,7 @@ public class DeleteOperationsTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Section 1",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -140,7 +140,7 @@ public class DeleteOperationsTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-to-keep",
                                 title = "Keep Section",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -154,7 +154,7 @@ public class DeleteOperationsTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-to-delete",
                                 title = "Delete Section",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -198,7 +198,7 @@ public class DeleteOperationsTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-to-keep",
                                 title = "Keep Section",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -265,7 +265,7 @@ public class DeleteOperationsTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-2",
                                 title = "Section 2",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -347,7 +347,7 @@ public class DeleteOperationsTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Section 1",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {

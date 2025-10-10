@@ -43,7 +43,7 @@ public class CreateFormWithFieldTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "User Information",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -125,7 +125,7 @@ public class CreateFormWithFieldTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "All Field Types",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {
@@ -208,7 +208,7 @@ public class CreateFormWithFieldTests : IClassFixture<IntegrationTestFixture>
                             {
                                 id = "section-1",
                                 title = "Constraints",
-                                widgets = new[]
+                                widgets = new object[]
                                 {
                                     new
                                     {

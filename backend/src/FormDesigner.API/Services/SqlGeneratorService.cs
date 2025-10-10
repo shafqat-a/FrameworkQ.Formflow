@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using FormDesigner.API.Data;
 using FormDesigner.API.Data.Repositories;
 using FormDesigner.API.Models.DTOs;
 using FormDesigner.API.Models.DTOs.Specs;
@@ -8,22 +9,38 @@ namespace FormDesigner.API.Services;
 
 /// <summary>
 /// Service implementation for generating SQL DDL from form definitions.
-/// Generates PostgreSQL-compatible CREATE TABLE statements.
+/// Generates database-provider-specific CREATE TABLE statements for both PostgreSQL and SQL Server.
 /// </summary>
 public class SqlGeneratorService : ISqlGeneratorService
 {
     private readonly IFormRepository _formRepository;
+    private readonly ApplicationDbContext _dbContext;
     private readonly ILogger<SqlGeneratorService> _logger;
+    private readonly bool _isPostgreSQL;
+    private readonly bool _isSqlServer;
+
     private static readonly JsonSerializerOptions _jsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
         DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
     };
 
-    public SqlGeneratorService(IFormRepository formRepository, ILogger<SqlGeneratorService> logger)
+    public SqlGeneratorService(
+        IFormRepository formRepository,
+        ApplicationDbContext dbContext,
+        ILogger<SqlGeneratorService> logger)
     {
         _formRepository = formRepository;
+        _dbContext = dbContext;
         _logger = logger;
+
+        // Detect database provider
+        var providerName = _dbContext.Database.ProviderName ?? string.Empty;
+        _isPostgreSQL = providerName.Contains("Npgsql", StringComparison.OrdinalIgnoreCase);
+        _isSqlServer = providerName.Contains("SqlServer", StringComparison.OrdinalIgnoreCase);
+
+        _logger.LogInformation("SqlGeneratorService initialized with provider: {Provider} (PostgreSQL={IsPostgreSQL}, SqlServer={IsSqlServer})",
+            providerName, _isPostgreSQL, _isSqlServer);
     }
 
     public async Task<string?> GenerateSqlAsync(string formId)
@@ -86,15 +103,30 @@ public class SqlGeneratorService : ISqlGeneratorService
         var tableName = $"{formId}_{pageId}_{sectionId}_{widgetId}";
 
         sqlBuilder.AppendLine($"-- Table for widget: {widgetId}");
-        sqlBuilder.AppendLine($"CREATE TABLE IF NOT EXISTS {tableName} (");
 
-        // Standard columns
-        sqlBuilder.AppendLine("    instance_id UUID NOT NULL,");
-        sqlBuilder.AppendLine("    page_id TEXT NOT NULL,");
-        sqlBuilder.AppendLine("    section_id TEXT NOT NULL,");
-        sqlBuilder.AppendLine("    widget_id TEXT NOT NULL,");
-        sqlBuilder.AppendLine("    row_id TEXT NOT NULL,");
-        sqlBuilder.AppendLine("    recorded_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),");
+        // Generate provider-specific CREATE TABLE syntax
+        if (_isSqlServer)
+        {
+            sqlBuilder.AppendLine($"IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = '{tableName}')");
+            sqlBuilder.AppendLine($"CREATE TABLE {tableName} (");
+        }
+        else
+        {
+            sqlBuilder.AppendLine($"CREATE TABLE IF NOT EXISTS {tableName} (");
+        }
+
+        // Standard columns with provider-specific types
+        var guidType = _isSqlServer ? "UNIQUEIDENTIFIER" : "UUID";
+        var textType = _isSqlServer ? "NVARCHAR(255)" : "TEXT";
+        var timestampType = _isSqlServer ? "DATETIME2" : "TIMESTAMPTZ";
+        var timestampDefault = _isSqlServer ? "SYSUTCDATETIME()" : "NOW()";
+
+        sqlBuilder.AppendLine($"    instance_id {guidType} NOT NULL,");
+        sqlBuilder.AppendLine($"    page_id {textType} NOT NULL,");
+        sqlBuilder.AppendLine($"    section_id {textType} NOT NULL,");
+        sqlBuilder.AppendLine($"    widget_id {textType} NOT NULL,");
+        sqlBuilder.AppendLine($"    row_id {textType} NOT NULL,");
+        sqlBuilder.AppendLine($"    recorded_at {timestampType} NOT NULL DEFAULT {timestampDefault},");
 
         // Data columns from table definition
         foreach (var column in table.Columns)
@@ -119,16 +151,31 @@ public class SqlGeneratorService : ISqlGeneratorService
         var tableName = $"{formId}_{pageId}_{sectionId}_{widgetId}";
 
         sqlBuilder.AppendLine($"-- Grid table for widget: {widgetId}");
-        sqlBuilder.AppendLine($"CREATE TABLE IF NOT EXISTS {tableName} (");
 
-        // Standard columns
-        sqlBuilder.AppendLine("    instance_id UUID NOT NULL,");
-        sqlBuilder.AppendLine("    page_id TEXT NOT NULL,");
-        sqlBuilder.AppendLine("    section_id TEXT NOT NULL,");
-        sqlBuilder.AppendLine("    widget_id TEXT NOT NULL,");
-        sqlBuilder.AppendLine("    row_key TEXT NOT NULL,");
-        sqlBuilder.AppendLine("    column_key TEXT NOT NULL,");
-        sqlBuilder.AppendLine("    recorded_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),");
+        // Generate provider-specific CREATE TABLE syntax
+        if (_isSqlServer)
+        {
+            sqlBuilder.AppendLine($"IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = '{tableName}')");
+            sqlBuilder.AppendLine($"CREATE TABLE {tableName} (");
+        }
+        else
+        {
+            sqlBuilder.AppendLine($"CREATE TABLE IF NOT EXISTS {tableName} (");
+        }
+
+        // Standard columns with provider-specific types
+        var guidType = _isSqlServer ? "UNIQUEIDENTIFIER" : "UUID";
+        var textType = _isSqlServer ? "NVARCHAR(255)" : "TEXT";
+        var timestampType = _isSqlServer ? "DATETIME2" : "TIMESTAMPTZ";
+        var timestampDefault = _isSqlServer ? "SYSUTCDATETIME()" : "NOW()";
+
+        sqlBuilder.AppendLine($"    instance_id {guidType} NOT NULL,");
+        sqlBuilder.AppendLine($"    page_id {textType} NOT NULL,");
+        sqlBuilder.AppendLine($"    section_id {textType} NOT NULL,");
+        sqlBuilder.AppendLine($"    widget_id {textType} NOT NULL,");
+        sqlBuilder.AppendLine($"    row_key {textType} NOT NULL,");
+        sqlBuilder.AppendLine($"    column_key {textType} NOT NULL,");
+        sqlBuilder.AppendLine($"    recorded_at {timestampType} NOT NULL DEFAULT {timestampDefault},");
 
         // Cell value column
         var cellType = grid.Cell?.Type ?? "string";
@@ -153,7 +200,18 @@ public class SqlGeneratorService : ISqlGeneratorService
         if (!string.IsNullOrEmpty(column.Formula))
         {
             var sqlFormula = TranslateFormulaToSql(column.Formula);
-            return $"{column.Name} {sqlType} GENERATED ALWAYS AS ({sqlFormula}) STORED";
+
+            // Provider-specific computed column syntax
+            if (_isSqlServer)
+            {
+                // SQL Server: AS (formula) PERSISTED
+                return $"{column.Name} AS ({sqlFormula}) PERSISTED";
+            }
+            else
+            {
+                // PostgreSQL: GENERATED ALWAYS AS (formula) STORED
+                return $"{column.Name} {sqlType} GENERATED ALWAYS AS ({sqlFormula}) STORED";
+            }
         }
 
         var notNull = column.Required == true ? " NOT NULL" : "";
@@ -164,19 +222,38 @@ public class SqlGeneratorService : ISqlGeneratorService
 
     private string MapDslTypeToSql(string dslType)
     {
-        return dslType.ToLower() switch
+        if (_isSqlServer)
         {
-            "string" => "VARCHAR(255)",
-            "text" => "TEXT",
-            "integer" => "INTEGER",
-            "decimal" => "NUMERIC(18,2)",
-            "date" => "DATE",
-            "time" => "TIME",
-            "datetime" => "TIMESTAMPTZ",
-            "bool" => "BOOLEAN",
-            "enum" => "VARCHAR(100)",
-            _ => "TEXT"
-        };
+            return dslType.ToLower() switch
+            {
+                "string" => "NVARCHAR(255)",
+                "text" => "NVARCHAR(MAX)",
+                "integer" => "INT",
+                "decimal" => "DECIMAL(18,2)",
+                "date" => "DATE",
+                "time" => "TIME",
+                "datetime" => "DATETIME2",
+                "bool" => "BIT",
+                "enum" => "NVARCHAR(100)",
+                _ => "NVARCHAR(MAX)"
+            };
+        }
+        else // PostgreSQL
+        {
+            return dslType.ToLower() switch
+            {
+                "string" => "VARCHAR(255)",
+                "text" => "TEXT",
+                "integer" => "INTEGER",
+                "decimal" => "NUMERIC(18,2)",
+                "date" => "DATE",
+                "time" => "TIME",
+                "datetime" => "TIMESTAMPTZ",
+                "bool" => "BOOLEAN",
+                "enum" => "VARCHAR(100)",
+                _ => "TEXT"
+            };
+        }
     }
 
     private string TranslateFormulaToSql(string formula)

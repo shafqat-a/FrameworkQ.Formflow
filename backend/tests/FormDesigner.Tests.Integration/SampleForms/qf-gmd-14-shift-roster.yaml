@@ -4,8 +4,9 @@ form:
   version: "01"
   pages:
     - id: page-1
-      title: Shift Duty Roaster
+      title: Monthly Shift Duty Roaster
       sections:
+        # Form Header (Standard QMS Header)
         - id: section-header
           title: Form Header
           widgets:
@@ -18,36 +19,106 @@ form:
                 page_number: 1 of 1
                 organization: POWER GRID COMPANY OF BANGLADESH LTD.
                 form_title: MONTHLY SHIFT DUTY ROASTER
-                category: Quality Forms
+                category: QUALITY FORMS
 
-        - id: section-info
-          title: Basic Info
+        # Basic Information - Layout Table (2 rows x 3 columns matching paper form)
+        - id: section-basic-info
+          title: Basic Information
           widgets:
-            - type: field
-              id: grid-circle
-              field:
-                name: grid-circle
-                label: Grid Circle
-                type: text
-                required: true
+            - type: group
+              id: info-layout
+              group:
+                layout:
+                  style: table
+                  columns: 3
+                  rows: 2
+                  bordered: true
+                  compact: true
+                cells:
+                  # Row 1: Grid Circle | GMD | Sub-station
+                  - row: 0
+                    col: 0
+                    colspan: 1
+                    rowspan: 1
+                    field:
+                      name: grid-circle
+                      label: "Grid Circle:"
+                      type: text
+                      required: true
+                      placeholder: "............................"
 
+                  - row: 0
+                    col: 1
+                    colspan: 1
+                    rowspan: 1
+                    field:
+                      name: gmd
+                      label: "GMD:"
+                      type: text
+                      required: true
+                      placeholder: "................"
+
+                  - row: 0
+                    col: 2
+                    colspan: 1
+                    rowspan: 1
+                    field:
+                      name: sub-station
+                      label: "Sub-station:"
+                      type: text
+                      required: false
+
+                  # Row 2: Date | Reference File | Sub-Station ID
+                  - row: 1
+                    col: 0
+                    colspan: 1
+                    rowspan: 1
+                    field:
+                      name: date
+                      label: "Date:"
+                      type: date
+                      required: true
+
+                  - row: 1
+                    col: 1
+                    colspan: 1
+                    rowspan: 1
+                    field:
+                      name: reference-file
+                      label: "Reference File:"
+                      type: text
+                      required: false
+
+                  - row: 1
+                    col: 2
+                    colspan: 1
+                    rowspan: 1
+                    field:
+                      name: sub-station-id
+                      label: "Sub-Station Identification No:"
+                      type: text
+                      required: false
+
+        # Month Field (Full Width)
+        - id: section-month
+          title: Period
+          widgets:
             - type: field
               id: month
               field:
                 name: month
-                label: Month
+                label: "Month:"
                 type: text
                 required: true
+                placeholder: ".........................."
 
+        # Monthly Shift Duty Roster Table
         - id: section-roster
           title: Monthly Roster
           widgets:
             - type: table
               id: duty-roster
               table:
-                row_mode: finite
-                min: 1
-                max: 50
                 allow_add_rows: true
                 allow_delete_rows: true
                 columns:
@@ -74,30 +145,170 @@ form:
                   - name: day_5
                     label: "5"
                     type: string
+                  - name: day_6
+                    label: "6"
+                    type: string
+                  - name: day_7
+                    label: "7"
+                    type: string
+                  - name: day_8
+                    label: "8"
+                    type: string
+                  - name: day_9
+                    label: "9"
+                    type: string
+                  - name: day_10
+                    label: "10"
+                    type: string
+                  - name: day_11
+                    label: "11"
+                    type: string
+                  - name: day_12
+                    label: "12"
+                    type: string
+                  - name: day_13
+                    label: "13"
+                    type: string
+                  - name: day_14
+                    label: "14"
+                    type: string
+                  - name: day_15
+                    label: "15"
+                    type: string
+                  - name: day_16
+                    label: "16"
+                    type: string
+                  - name: day_17
+                    label: "17"
+                    type: string
+                  - name: day_18
+                    label: "18"
+                    type: string
+                  - name: day_19
+                    label: "19"
+                    type: string
+                  - name: day_20
+                    label: "20"
+                    type: string
+                  - name: day_21
+                    label: "21"
+                    type: string
+                  - name: day_22
+                    label: "22"
+                    type: string
+                  - name: day_23
+                    label: "23"
+                    type: string
+                  - name: day_24
+                    label: "24"
+                    type: string
+                  - name: day_25
+                    label: "25"
+                    type: string
+                  - name: day_26
+                    label: "26"
+                    type: string
+                  - name: day_27
+                    label: "27"
+                    type: string
+                  - name: day_28
+                    label: "28"
+                    type: string
+                  - name: day_29
+                    label: "29"
+                    type: string
+                  - name: day_30
+                    label: "30"
+                    type: string
+                  - name: day_31
+                    label: "31"
+                    type: string
 
-        - id: section-notes
-          title: Shift Information
+        # Shift Legend
+        - id: section-shift-legend
+          title: Shift Timings
           widgets:
             - type: notes
-              id: shift-notes
+              id: shift-legend
+              notes:
+                style: info
+                title: ""
+                content: "Note: A shift: 06:00 – 14:00 hr. B shift: 14:00 – 22:00 hr. C shift: 22:00 – 06:00 hr"
+
+        # Holiday and Duty Codes
+        - id: section-codes
+          title: Shift Codes
+          widgets:
+            - type: notes
+              id: shift-codes
               notes:
                 style: info
                 title: NOTE
-                content: "A shift: 06:00 – 14:00 hr. B shift: 14:00 – 22:00 hr. C shift: 22:00 – 06:00 hr"
+                content: |
+                  1. Govt. Holiday : G
+                  2. Weekly Holiday : F
+                  3. Additional Duty : Ad
 
+        # Approval Signatures - Layout Table (3 columns for first row, 2 for second)
         - id: section-approval
-          title: Approval
+          title: Approvals
           widgets:
-            - type: signature
-              id: sig-reviewed
-              signature:
-                role: Reviewed by (GMT-1)
-                show_designation: false
-                show_date: true
+            - type: group
+              id: approval-layout
+              group:
+                layout:
+                  style: table
+                  columns: 3
+                  rows: 2
+                  bordered: false
+                  compact: false
+                cells:
+                  # Row 1: JAM | DM/AM | Manager (3 columns)
+                  - row: 0
+                    col: 0
+                    colspan: 1
+                    rowspan: 1
+                    field:
+                      name: sig-jam
+                      label: Junior Assistant Manager
+                      type: text
+                      placeholder: "............................ Sub-station GMD. ................, PGCB."
 
-            - type: signature
-              id: sig-approved
-              signature:
-                role: Approved by (DT)
-                show_designation: false
-                show_date: true
+                  - row: 0
+                    col: 1
+                    colspan: 1
+                    rowspan: 1
+                    field:
+                      name: sig-dm-am
+                      label: Deputy Manager / Assistant Manager
+                      type: text
+                      placeholder: "............................ Sub-station GMD. ..............., PGCB."
+
+                  - row: 0
+                    col: 2
+                    colspan: 1
+                    rowspan: 1
+                    field:
+                      name: sig-manager
+                      label: Manager
+                      type: text
+                      placeholder: "GMD. .................., PGCB"
+
+                  # Row 2: Reviewed | Approved | (empty)
+                  - row: 1
+                    col: 0
+                    colspan: 1
+                    rowspan: 1
+                    field:
+                      name: sig-reviewed
+                      label: "Reviewed by (GMT-1):"
+                      type: text
+
+                  - row: 1
+                    col: 1
+                    colspan: 1
+                    rowspan: 1
+                    field:
+                      name: sig-approved
+                      label: "Approved by (DGM):"
+                      type: text
